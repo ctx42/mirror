@@ -13,6 +13,9 @@ import (
 // ErrTagSyntax represents error when parsing struct field tag.
 var ErrTagSyntax = errors.New("struct field tag syntax error")
 
+// Ptr returns a pointer to any type.
+func Ptr[T any](v T) *T { return &v }
+
 // ParseTags parses a single struct field tag and returns a map of tags where
 // keys are tag names. It returns the [ErrTagSyntax] error when a string
 // describing tags is invalid.
