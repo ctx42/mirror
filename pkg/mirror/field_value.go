@@ -24,7 +24,7 @@ func NewFieldValue(fld *Field, value reflect.Value) *FieldValue {
 // StructValue returns the field as [StructValue].
 func (fv *FieldValue) StructValue() *StructValue {
 	return &StructValue{
-		metadata: TypeMetadata(fv.Type()),
+		metadata: ReflectType(fv.Type()),
 		value:    fv.value,
 		kind:     fv.kind,
 	}

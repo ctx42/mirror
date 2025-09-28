@@ -34,7 +34,7 @@ func NewStructValue(s any) *StructValue {
 	if val.Kind() != reflect.Struct {
 		return nil
 	}
-	sv.metadata = MetadataFor(s)
+	sv.metadata = Reflect(s)
 	return sv
 }
 

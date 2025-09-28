@@ -10,13 +10,13 @@ import (
 	"github.com/ctx42/testing/pkg/assert"
 )
 
-func Test_MetadataFor(t *testing.T) {
+func Test_Reflect(t *testing.T) {
 	t.Run("pointer to struct", func(t *testing.T) {
 		// --- Given ---
 		s := &struct{ F string }{}
 
 		// --- When ---
-		have := MetadataFor(s)
+		have := Reflect(s)
 
 		// --- Then ---
 		assert.NotNil(t, have)
@@ -33,7 +33,7 @@ func Test_MetadataFor(t *testing.T) {
 		s := struct{ F string }{}
 
 		// --- When ---
-		have := MetadataFor(s)
+		have := Reflect(s)
 
 		// --- Then ---
 		assert.NotNil(t, have)
@@ -50,7 +50,7 @@ func Test_MetadataFor(t *testing.T) {
 		i := 42
 
 		// --- When ---
-		have := MetadataFor(i)
+		have := Reflect(i)
 
 		// --- Then ---
 		assert.NotNil(t, have)

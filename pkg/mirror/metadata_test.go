@@ -10,13 +10,13 @@ import (
 	"github.com/ctx42/testing/pkg/assert"
 )
 
-func Test_NewAnyMetadata_NewTypeMetadata(t *testing.T) {
+func Test_NewMetadata_NewTypeMetadata(t *testing.T) {
 	t.Run("struct", func(t *testing.T) {
 		// --- Given ---
 		s := struct{ F int }{}
 
 		// --- When ---
-		md := NewAnyMetadata(s)
+		md := NewMetadata(s)
 
 		// --- Then ---
 		assert.NotNil(t, md.typ)
@@ -28,7 +28,7 @@ func Test_NewAnyMetadata_NewTypeMetadata(t *testing.T) {
 		s := &struct{ F int }{}
 
 		// --- When ---
-		md := NewAnyMetadata(s)
+		md := NewMetadata(s)
 
 		// --- Then ---
 		assert.NotNil(t, md.typ)
@@ -36,11 +36,11 @@ func Test_NewAnyMetadata_NewTypeMetadata(t *testing.T) {
 	})
 
 	t.Run("type of nil panics", func(t *testing.T) {
-		assert.Panic(t, func() { NewAnyMetadata(reflect.TypeOf(nil)) })
+		assert.Panic(t, func() { NewMetadata(reflect.TypeOf(nil)) })
 	})
 
 	t.Run("nil panics", func(t *testing.T) {
-		assert.Panic(t, func() { NewAnyMetadata(nil) })
+		assert.Panic(t, func() { NewMetadata(nil) })
 	})
 
 	t.Run("not a struct", func(t *testing.T) {
@@ -48,7 +48,7 @@ func Test_NewAnyMetadata_NewTypeMetadata(t *testing.T) {
 		var i int
 
 		// --- When ---
-		have := NewAnyMetadata(i)
+		have := NewMetadata(i)
 
 		// --- Then ---
 		assert.Equal(t, reflect.TypeOf(i), have.typ)
@@ -61,7 +61,7 @@ func Test_NewAnyMetadata_NewTypeMetadata(t *testing.T) {
 		var i *int
 
 		// --- When ---
-		have := NewAnyMetadata(i)
+		have := NewMetadata(i)
 
 		// --- Then ---
 		assert.Equal(t, reflect.TypeOf(i).Elem(), have.typ)
@@ -74,7 +74,7 @@ func Test_Metadata_Type(t *testing.T) {
 	t.Run("struct", func(t *testing.T) {
 		// --- Given ---
 		s := struct{ F int }{}
-		md := NewAnyMetadata(s)
+		md := NewMetadata(s)
 
 		// --- When ---
 		have := md.Type()
@@ -87,7 +87,7 @@ func Test_Metadata_Type(t *testing.T) {
 	t.Run("pointer to struct", func(t *testing.T) {
 		// --- Given ---
 		s := &struct{ F int }{}
-		md := NewAnyMetadata(s)
+		md := NewMetadata(s)
 
 		// --- When ---
 		have := md.Type()
@@ -102,7 +102,7 @@ func Test_Metadata_Kind(t *testing.T) {
 	t.Run("struct", func(t *testing.T) {
 		// --- Given ---
 		s := struct{ F int }{}
-		md := NewAnyMetadata(s)
+		md := NewMetadata(s)
 
 		// --- When ---
 		have := md.Kind()
@@ -114,7 +114,7 @@ func Test_Metadata_Kind(t *testing.T) {
 	t.Run("pointer to struct", func(t *testing.T) {
 		// --- Given ---
 		s := &struct{ F int }{}
-		md := NewAnyMetadata(s)
+		md := NewMetadata(s)
 
 		// --- When ---
 		have := md.Kind()
@@ -128,7 +128,7 @@ func Test_Metadata_IsStruct(t *testing.T) {
 	t.Run("struct", func(t *testing.T) {
 		// --- Given ---
 		s := struct{ F int }{}
-		md := NewAnyMetadata(s)
+		md := NewMetadata(s)
 
 		// --- When ---
 		have := md.IsStruct()
@@ -140,7 +140,7 @@ func Test_Metadata_IsStruct(t *testing.T) {
 	t.Run("pointer to struct", func(t *testing.T) {
 		// --- Given ---
 		s := struct{ F int }{}
-		md := NewAnyMetadata(s)
+		md := NewMetadata(s)
 
 		// --- When ---
 		have := md.IsStruct()
@@ -152,7 +152,7 @@ func Test_Metadata_IsStruct(t *testing.T) {
 	t.Run("not struct", func(t *testing.T) {
 		// --- Given ---
 		var i int
-		md := NewAnyMetadata(i)
+		md := NewMetadata(i)
 
 		// --- When ---
 		have := md.IsStruct()
@@ -165,7 +165,7 @@ func Test_Metadata_IsStruct(t *testing.T) {
 func Test_Metadata_Fields(t *testing.T) {
 	t.Run("struct with fields", func(t *testing.T) {
 		// --- Given ---
-		md := NewAnyMetadata(TStruct{})
+		md := NewMetadata(TStruct{})
 
 		// --- When ---
 		fields := md.Fields()
@@ -185,7 +185,7 @@ func Test_Metadata_Fields(t *testing.T) {
 
 	t.Run("struct without fields", func(t *testing.T) {
 		// --- Given ---
-		md := NewAnyMetadata(struct{}{})
+		md := NewMetadata(struct{}{})
 
 		// --- When ---
 		fields := md.Fields()
@@ -198,7 +198,7 @@ func Test_Metadata_Fields(t *testing.T) {
 func Test_Metadata_FieldByName(t *testing.T) {
 	t.Run("known exported field", func(t *testing.T) {
 		// --- Given ---
-		md := NewAnyMetadata(TStruct{})
+		md := NewMetadata(TStruct{})
 
 		// --- When ---
 		have := md.FieldByName("FStr")
@@ -209,7 +209,7 @@ func Test_Metadata_FieldByName(t *testing.T) {
 
 	t.Run("known unexported field", func(t *testing.T) {
 		// --- Given ---
-		md := NewAnyMetadata(TStruct{})
+		md := NewMetadata(TStruct{})
 
 		// --- When ---
 		have := md.FieldByName("fStr")
@@ -220,7 +220,7 @@ func Test_Metadata_FieldByName(t *testing.T) {
 
 	t.Run("unknown field", func(t *testing.T) {
 		// --- Given ---
-		md := NewAnyMetadata(TStruct{})
+		md := NewMetadata(TStruct{})
 
 		// --- When ---
 		have := md.FieldByName("Unknown")
@@ -233,7 +233,7 @@ func Test_Metadata_FieldByName(t *testing.T) {
 func Test_Metadata_FieldByIndex(t *testing.T) {
 	t.Run("known exported field", func(t *testing.T) {
 		// --- Given ---
-		md := NewAnyMetadata(TStruct{})
+		md := NewMetadata(TStruct{})
 
 		// --- When ---
 		have := md.FieldByIndex(2)
@@ -244,7 +244,7 @@ func Test_Metadata_FieldByIndex(t *testing.T) {
 
 	t.Run("known unexported field", func(t *testing.T) {
 		// --- Given ---
-		md := NewAnyMetadata(TStruct{})
+		md := NewMetadata(TStruct{})
 
 		// --- When ---
 		have := md.FieldByIndex(1)
@@ -255,7 +255,7 @@ func Test_Metadata_FieldByIndex(t *testing.T) {
 
 	t.Run("unknown field", func(t *testing.T) {
 		// --- Given ---
-		md := NewAnyMetadata(TStruct{})
+		md := NewMetadata(TStruct{})
 
 		// --- When ---
 		have := md.FieldByIndex(42)

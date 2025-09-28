@@ -12,14 +12,16 @@ type Metadata struct {
 	fields []*Field     // Struct fields. Nil when the struct has no fields.
 }
 
-// NewAnyMetadata is a convenience function that calls [NewTypeMetadata] with
-// [reflect.Type] of the argument v. Panics if `v` is nil.
-func NewAnyMetadata(v any) *Metadata {
+// NewMetadata retrieves struct metadata by calling [NewTypeMetadata]. Expects
+// "v" to be a [reflect.Struct] or [reflect.Ptr] to a [reflect.Struct];
+// otherwise, it panics. See [NewTypeMetadata] for details.
+func NewMetadata(v any) *Metadata {
 	return NewTypeMetadata(reflect.TypeOf(v))
 }
 
-// NewTypeMetadata returns a new instance of [Metadata] for a type. Panics if
-// `typ` represents nil.
+// NewTypeMetadata returns a new instance of [Metadata] for the type. Expects
+// "typ" to be a [reflect.Struct] or [reflect.Ptr] to a [reflect.Struct];
+// otherwise, it panics.
 func NewTypeMetadata(typ reflect.Type) *Metadata {
 	typ = indirect(typ)
 	md := &Metadata{

@@ -41,8 +41,8 @@ go get github.com/ctx42/mirror
 The `mirror` library provides two primary functions to access struct metadata:
 
 ```go
-func MetadataFor(v any) *Metadata
-func TypeMetadata(typ reflect.Type) *Metadata
+func Reflect(v any) *Metadata
+func ReflectType(typ reflect.Type) *Metadata
 ```
 
 These functions parse and cache struct metadata for faster subsequent access.
@@ -50,7 +50,7 @@ Below are examples demonstrating common use cases.
 
 ## Accessing Cached Struct 
 
-The `MetadataFor` function accepts a struct pointer and caches its metadata.
+The `Reflect` function accepts a struct pointer and caches its metadata.
 Subsequent calls with the same struct type retrieve the cached metadata,
 improving performance.
 
@@ -62,7 +62,7 @@ s := &struct {
     f4 time.Time
 }{}
 
-smd := mirror.MetadataFor(s)
+smd := mirror.Reflect(s)
 
 fmt.Printf("type: %v\n", smd.Type().String())
 fmt.Printf("kind: %v\n", smd.Kind().String())
@@ -85,7 +85,7 @@ interface to inspect field properties.
 
 ```go
 s := &struct{ f1 time.Time }{}
-smd := mirror.MetadataFor(s)
+smd := mirror.Reflect(s)
 
 field := smd.FieldByName("f1")
 fmt.Printf("f1 type: %v\n", field.Type().String())
@@ -125,7 +125,7 @@ s := &struct {
     F1 int `my:"t1,t2, t3"`
 }{}
 
-smd := mirror.MetadataFor(s)
+smd := mirror.Reflect(s)
 field := smd.FieldByName("F1")
 tag := field.Tag("my")
 

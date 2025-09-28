@@ -28,17 +28,18 @@ var (
 
 func init() { typCache = map[reflect.Type]*Metadata{} }
 
-// MetadataFor is a convenience function calling [TypeMetadata], see it for
-// details and restrictions on argument v.
-func MetadataFor(v any) *Metadata {
-	return TypeMetadata(reflect.TypeOf(v))
+// Reflect retrieves struct metadata by calling [ReflectType]. Expects "v" to
+// be a [reflect.Struct] or [reflect.Ptr] to a [reflect.Struct]; otherwise, it
+// panics. See [ReflectType] for details. Returns cached or new [Metadata].
+func Reflect(v any) *Metadata {
+	return ReflectType(reflect.TypeOf(v))
 }
 
-// TypeMetadata returns struct metadata from the global cache or crates
-// new Metadata and caches it before returning. Expects typ to be of kind
-// [reflect.Struct] or [reflect.Ptr] with element of kind [reflect.Struct]
-// - it will panic otherwise.
-func TypeMetadata(typ reflect.Type) *Metadata {
+// ReflectType retrieves struct metadata from the global cache or creates new
+// [Metadata], caching it before returning. Expects "typ" to be a
+// [reflect.Struct] or [reflect.Ptr] to a [reflect.Struct]; otherwise, it
+// panics.
+func ReflectType(typ reflect.Type) *Metadata {
 	if typ.Kind() == reflect.Ptr {
 		typ = typ.Elem()
 	}
