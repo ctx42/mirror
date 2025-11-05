@@ -28,17 +28,12 @@ var (
 
 func init() { typCache = map[reflect.Type]*Metadata{} }
 
-// Reflect retrieves struct metadata by calling [ReflectType]. Expects "v" to
-// be a [reflect.Struct] or [reflect.Ptr] to a [reflect.Struct]; otherwise, it
-// panics. See [ReflectType] for details. Returns cached or new [Metadata].
+// Reflect extracts [Metadata] about type of "v".
 func Reflect(v any) *Metadata {
 	return ReflectType(reflect.TypeOf(v))
 }
 
-// ReflectType retrieves struct metadata from the global cache or creates new
-// [Metadata], caching it before returning. Expects "typ" to be a
-// [reflect.Struct] or [reflect.Ptr] to a [reflect.Struct]; otherwise, it
-// panics.
+// ReflectType extracts [Metadata] about the type.
 func ReflectType(typ reflect.Type) *Metadata {
 	if typ.Kind() == reflect.Ptr {
 		typ = typ.Elem()
@@ -52,6 +47,27 @@ func ReflectType(typ reflect.Type) *Metadata {
 	}
 
 	md = NewTypeMetadata(typ)
+	typCacheMX.Lock()
+	typCache[typ] = md
+	typCacheMX.Unlock()
+	return md
+}
+
+// ReflectValue extracts [Metadata] about the value.
+func ReflectValue(val reflect.Value) *Metadata {
+	typ := val.Type()
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+
+	typCacheMX.RLock()
+	md, found := typCache[typ]
+	typCacheMX.RUnlock()
+	if found {
+		return md
+	}
+
+	md = NewValueMetadata(val)
 	typCacheMX.Lock()
 	typCache[typ] = md
 	typCacheMX.Unlock()

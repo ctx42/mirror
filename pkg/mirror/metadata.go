@@ -3,33 +3,51 @@
 
 package mirror
 
-import "reflect"
+import (
+	"reflect"
+	"runtime"
+)
 
 // Metadata represents struct metadata.
 type Metadata struct {
 	typ    reflect.Type // Struct type (after indirect).
 	kind   reflect.Kind // Struct kind.
 	fields []*Field     // Struct fields. Nil when the struct has no fields.
+	name   string       // Type name when, may be empty.
+	pkg    string       // Type import string, may be empty.
 }
 
-// NewMetadata retrieves struct metadata by calling [NewTypeMetadata]. Expects
-// "v" to be a [reflect.Struct] or [reflect.Ptr] to a [reflect.Struct];
-// otherwise, it panics. See [NewTypeMetadata] for details.
+// NewMetadata extracts [Metadata] about type of "v". Panics for nil value.
 func NewMetadata(v any) *Metadata {
 	return NewTypeMetadata(reflect.TypeOf(v))
 }
 
-// NewTypeMetadata returns a new instance of [Metadata] for the type. Expects
-// "typ" to be a [reflect.Struct] or [reflect.Ptr] to a [reflect.Struct];
-// otherwise, it panics.
+// NewTypeMetadata extracts [Metadata] for the type. Panics when type represents
+// nil value.
 func NewTypeMetadata(typ reflect.Type) *Metadata {
 	typ = indirect(typ)
 	md := &Metadata{
 		typ:  typ,
 		kind: typ.Kind(),
+		name: typ.Name(),
+		pkg:  typ.PkgPath(),
 	}
 	if md.IsStruct() {
 		md.getFields()
+	}
+	return md
+}
+
+// NewValueMetadata extracts [Metadata] about type of "v".
+func NewValueMetadata(val reflect.Value) *Metadata {
+	typ := val.Type()
+	md := NewTypeMetadata(typ)
+	if md.kind == reflect.Func {
+		if val.IsValid() && val.Pointer() != 0 {
+			if fn := runtime.FuncForPC(val.Pointer()); fn != nil {
+				md.pkg, md.name = splitOnLastPeriod(fn.Name())
+			}
+		}
 	}
 	return md
 }
@@ -39,6 +57,12 @@ func (md *Metadata) Type() reflect.Type { return md.typ }
 
 // Kind returns struct kind.
 func (md *Metadata) Kind() reflect.Kind { return md.kind }
+
+// Name returns type name. May return empty string.
+func (md *Metadata) Name() string { return md.name }
+
+// Package returns import string for the type. May return empty string.
+func (md *Metadata) Package() string { return md.pkg }
 
 // IsStruct returns true if the type is a struct, otherwise false.
 func (md *Metadata) IsStruct() bool {

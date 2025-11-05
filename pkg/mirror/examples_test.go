@@ -8,6 +8,8 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/ctx42/testing/pkg/check"
+
 	"github.com/ctx42/mirror/pkg/mirror"
 )
 
@@ -33,6 +35,21 @@ func ExampleReflect() {
 	// number of fields: 4
 	// field by index: F2
 	// field by name: f4
+}
+
+func ExampleReflectValue() {
+	val := reflect.ValueOf(check.After)
+	md := mirror.ReflectValue(val)
+
+	fmt.Printf("type   : %s\n", md.Type().String())
+	fmt.Printf("kind   : %s\n", md.Kind().String())
+	fmt.Printf("name   : %s\n", md.Name())
+	fmt.Printf("package: %s\n", md.Package())
+	// Output:
+	// type   : func(interface {}, interface {}, ...interface {}) error
+	// kind   : func
+	// name   : After
+	// package: github.com/ctx42/testing/pkg/check
 }
 
 func ExampleReflect_field() {

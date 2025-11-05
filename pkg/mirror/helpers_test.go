@@ -257,3 +257,30 @@ func Test_indirect(t *testing.T) {
 		})
 	}
 }
+
+func Test_splitOnLastPeriod_tabular(t *testing.T) {
+	tt := []struct {
+		testN string
+
+		str   string
+		wImp  string
+		wName string
+	}{
+		{"empty", "", "", ""},
+		{"just period", ".", "", ""},
+		{"simple", "a.b", "a", "b"},
+		{"multiple periods", "a.b.c.d", "a.b.c", "d"},
+		{"ends with period", "a.b.c.", "a.b.c", ""},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.testN, func(t *testing.T) {
+			// --- When ---
+			hImp, hName := splitOnLastPeriod(tc.str)
+
+			// --- Then ---
+			assert.Equal(t, tc.wImp, hImp)
+			assert.Equal(t, tc.wName, hName)
+		})
+	}
+}

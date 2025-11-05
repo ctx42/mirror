@@ -167,3 +167,13 @@ func indirect(typ reflect.Type) reflect.Type {
 	}
 	return typ
 }
+
+// splitOnLastPeriod finds the last period in the string and returns everything
+// that was before it and after it.
+func splitOnLastPeriod(s string) (before, after string) {
+	i := strings.LastIndex(s, ".")
+	if i == -1 {
+		return s, "" // no dot
+	}
+	return s[:i], s[i+1:]
+}
