@@ -42,10 +42,11 @@ func NewTypeMetadata(typ reflect.Type) *Metadata {
 func NewValueMetadata(val reflect.Value) *Metadata {
 	typ := val.Type()
 	md := NewTypeMetadata(typ)
-	if md.kind == reflect.Func {
+	if md.kind == reflect.Func && md.name == "" {
 		if val.IsValid() && val.Pointer() != 0 {
 			if fn := runtime.FuncForPC(val.Pointer()); fn != nil {
-				md.pkg, md.name = splitOnLastPeriod(fn.Name())
+				name := fn.Name()
+				md.pkg, md.name = splitOnLastPeriod(name)
 			}
 		}
 	}
