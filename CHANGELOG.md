@@ -1,3 +1,7 @@
+## v0.3.1 (Thu, 12 Feb 2026 13:51:08 UTC)
+- style: Remove unneeded test case.
+- chore: Update dependencies.
+
 ## v0.3.0 (Wed, 05 Nov 2025 08:39:08 UTC)
 - chore: Update dependencies.
 - Extract type name and import path when possible.
