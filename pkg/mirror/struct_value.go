@@ -75,9 +75,6 @@ func (sv *StructValue) FieldByIndex(idx int) *FieldValue {
 	if sv.kind == reflect.Ptr {
 		val = val.Elem()
 	}
-	if idx >= sv.NumField() {
-		return nil
-	}
 	if fld := sv.metadata.FieldByIndex(idx); fld != nil {
 		if val = val.Field(idx); val.IsValid() {
 			return NewFieldValue(fld, val)

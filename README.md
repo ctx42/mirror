@@ -16,16 +16,16 @@
 
 # Mirror: Cached Struct Reflection for Go
 
-`mirror` is a lightweight library that provides simplified interface for 
+`mirror` is a lightweight library that provides a simplified interface for 
 reflecting structs. The metadata about the struct and its fields is cached to 
 improve performance. 
 
 ## Features
 
-- **Cached Reflection**: Parses struct metadata once and caches it for subsequent fast access.
+- **Cached Reflection**: Parses struct metadata once and caches it for later fast access.
 - **Simple Interface**: Provides an intuitive API to access struct and field metadata.
 - **Field Manipulation**: Supports setting struct field values using cached metadata.
-- **Tag Inspection**: Easily access and parse struct field tags.
+- **Tag Inspection**: Access and parse struct field tags.
 - **Lightweight**: Minimal overhead with a focus on performance and simplicity.
 
 ## Installation
@@ -45,7 +45,7 @@ func Reflect(v any) *Metadata
 func ReflectType(typ reflect.Type) *Metadata
 ```
 
-These functions parse and cache struct metadata for faster subsequent access.
+These functions parse and cache struct metadata for faster later access.
 Below are examples demonstrating common use cases.
 
 ## Accessing Cached Struct 

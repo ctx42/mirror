@@ -23,8 +23,8 @@ func Test_NewMetadata(t *testing.T) {
 		// --- Then ---
 		assert.NotNil(t, have.typ)
 		assert.Len(t, 1, have.fields)
-		assert.Equal(t, "", have.name)
 		assert.Equal(t, "", have.pkg)
+		assert.Equal(t, "", have.name)
 
 	})
 
@@ -38,8 +38,8 @@ func Test_NewMetadata(t *testing.T) {
 		// --- Then ---
 		assert.NotNil(t, have.typ)
 		assert.Len(t, 1, have.fields)
-		assert.Equal(t, "", have.name)
 		assert.Equal(t, "", have.pkg)
+		assert.Equal(t, "", have.name)
 	})
 
 	t.Run("type of nil panics", func(t *testing.T) {
@@ -61,8 +61,8 @@ func Test_NewMetadata(t *testing.T) {
 		assert.Equal(t, reflect.TypeOf(i), have.typ)
 		assert.Equal(t, reflect.TypeOf(i).Kind(), have.kind)
 		assert.Nil(t, have.fields)
-		assert.Equal(t, "int", have.name)
 		assert.Equal(t, "", have.pkg)
+		assert.Equal(t, "int", have.name)
 	})
 
 	t.Run("pointer to not a struct", func(t *testing.T) {
@@ -76,8 +76,8 @@ func Test_NewMetadata(t *testing.T) {
 		assert.Equal(t, reflect.TypeOf(i).Elem(), have.typ)
 		assert.Equal(t, reflect.TypeOf(i).Elem().Kind(), have.kind)
 		assert.Nil(t, have.fields)
-		assert.Equal(t, "int", have.name)
 		assert.Equal(t, "", have.pkg)
+		assert.Equal(t, "int", have.name)
 	})
 }
 
@@ -86,6 +86,8 @@ func Test_NewTypeMetadata(t *testing.T) {
 }
 
 func Test_NewValueMetadata(t *testing.T) {
+	fn0 := func() {}
+
 	t.Run("type", func(t *testing.T) {
 		// --- Given ---
 		val := reflect.ValueOf(bytes.Buffer{})
@@ -94,8 +96,8 @@ func Test_NewValueMetadata(t *testing.T) {
 		have := NewValueMetadata(val)
 
 		// --- Then ---
-		assert.Equal(t, "Buffer", have.name)
 		assert.Equal(t, "bytes", have.pkg)
+		assert.Equal(t, "Buffer", have.name)
 	})
 
 	t.Run("pointer type", func(t *testing.T) {
@@ -106,8 +108,8 @@ func Test_NewValueMetadata(t *testing.T) {
 		have := NewValueMetadata(val)
 
 		// --- Then ---
-		assert.Equal(t, "Buffer", have.name)
 		assert.Equal(t, "bytes", have.pkg)
+		assert.Equal(t, "Buffer", have.name)
 	})
 
 	t.Run("sdk func", func(t *testing.T) {
@@ -118,8 +120,8 @@ func Test_NewValueMetadata(t *testing.T) {
 		have := NewValueMetadata(val)
 
 		// --- Then ---
-		assert.Equal(t, "DeepEqual", have.name)
 		assert.Equal(t, "reflect", have.pkg)
+		assert.Equal(t, "DeepEqual", have.name)
 	})
 
 	t.Run("external func", func(t *testing.T) {
@@ -130,8 +132,45 @@ func Test_NewValueMetadata(t *testing.T) {
 		have := NewValueMetadata(val)
 
 		// --- Then ---
-		assert.Equal(t, "After", have.name)
 		assert.Equal(t, "github.com/ctx42/testing/pkg/check", have.pkg)
+		assert.Equal(t, "After", have.name)
+	})
+
+	t.Run("anonymous function fn0", func(t *testing.T) {
+		// --- Given ---
+		val := reflect.ValueOf(fn0)
+
+		// --- When ---
+		have := NewValueMetadata(val)
+
+		// --- Then ---
+		assert.Equal(t, "github.com/ctx42/mirror/pkg/mirror", have.pkg)
+		assert.Equal(t, "func1", have.name)
+	})
+
+	t.Run("anonymous function fn1", func(t *testing.T) {
+		// --- Given ---
+		fn1 := func() {}
+		val := reflect.ValueOf(fn1)
+
+		// --- When ---
+		have := NewValueMetadata(val)
+
+		// --- Then ---
+		assert.Equal(t, "github.com/ctx42/mirror/pkg/mirror", have.pkg)
+		assert.Equal(t, "func7.1", have.name)
+	})
+
+	t.Run("method", func(t *testing.T) {
+		// --- Given ---
+		val := reflect.ValueOf((&bytes.Buffer{}).String)
+
+		// --- When ---
+		have := NewValueMetadata(val)
+
+		// --- Then ---
+		assert.Equal(t, "bytes.(*Buffer)", have.pkg)
+		assert.Equal(t, "String", have.name)
 	})
 }
 
@@ -189,6 +228,17 @@ func Test_Metadata_Kind(t *testing.T) {
 	})
 }
 
+func Test_Metadata_Package(t *testing.T) {
+	// --- Given ---
+	md := &Metadata{pkg: "abc"}
+
+	// --- When ---
+	have := md.Package()
+
+	// --- Then ---
+	assert.Equal(t, "abc", have)
+}
+
 func Test_Metadata_Name(t *testing.T) {
 	// --- Given ---
 	md := &Metadata{name: "abc"}
@@ -200,15 +250,15 @@ func Test_Metadata_Name(t *testing.T) {
 	assert.Equal(t, "abc", have)
 }
 
-func Test_Metadata_Package(t *testing.T) {
+func Test_Metadata_PackageAndName(t *testing.T) {
 	// --- Given ---
-	md := &Metadata{pkg: "abc"}
+	md := &Metadata{pkg: "abc", name: "name"}
 
 	// --- When ---
-	have := md.Package()
+	have := md.PackageAndName()
 
 	// --- Then ---
-	assert.Equal(t, "abc", have)
+	assert.Equal(t, "abc.name", have)
 }
 
 func Test_Metadata_IsStruct(t *testing.T) {

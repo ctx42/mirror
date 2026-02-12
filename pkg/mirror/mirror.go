@@ -1,6 +1,9 @@
 // SPDX-FileCopyrightText: (c) 2025 Rafal Zajac <rzajac@gmail.com>
 // SPDX-License-Identifier: MIT
 
+// Package mirror is a lightweight library that provides a simplified interface
+// for reflecting structs. The metadata about the struct and its fields is
+// cached to improve performance.
 package mirror
 
 import (
@@ -17,7 +20,8 @@ var (
 	//   - reflect.Value.IsValid returns false.
 	ErrInvField = errors.New("invalid field")
 
-	// ErrUnexportedField represents error when accessing unexported field.
+	// ErrUnexportedField represents an error when accessing an unexported
+	// field.
 	ErrUnexportedField = errors.New("unexported field")
 )
 

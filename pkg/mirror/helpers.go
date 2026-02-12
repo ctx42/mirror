@@ -6,11 +6,12 @@ package mirror
 import (
 	"errors"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 )
 
-// ErrTagSyntax represents error when parsing struct field tag.
+// ErrTagSyntax represents the error when parsing a struct field tag.
 var ErrTagSyntax = errors.New("struct field tag syntax error")
 
 // Ptr returns a pointer to any type.
@@ -45,7 +46,7 @@ func ParseTags(fieldName, stag string) ([]Tag, error) {
 
 	var tags []Tag
 
-	// NOTE(arslan) following code is from the reflect and vet package with
+	// NOTE(arslan) following code is from the reflection and vet package with
 	// some modifications to collect all necessary information and extend it
 	// with usable methods
 	for stag != "" {
@@ -84,7 +85,7 @@ func ParseTags(fieldName, stag string) ([]Tag, error) {
 		key := stag[:i]
 		stag = stag[i+1:]
 
-		// Scan quoted string to find value.
+		// Scan the quoted string to find a value.
 		i = 1
 		for i < len(stag) && stag[i] != '"' {
 			if stag[i] == '\\' {
@@ -176,4 +177,31 @@ func splitOnLastPeriod(s string) (before, after string) {
 		return s, "" // no dot
 	}
 	return s[:i], s[i+1:]
+}
+
+// funcRx matches anonymous function names.
+//
+// Examples:
+//   - package.function.func1 -> (.func1)
+//   - package.function.func6.2 -> (.func6.2)
+var funcRx = regexp.MustCompile(`\.func\d+(\.\d+)?$`)
+
+// funcPkg expects a function name retrieved using [runtime.FuncForPC] and
+// returns the package path and function name. Returns empty strings for empty
+// name.
+func funcPkg(name string) (string, string) {
+	if name == "" {
+		return "", ""
+	}
+
+	if loc := funcRx.FindStringIndex(name); loc != nil {
+		fnName := name[loc[0]+1 : loc[1]]
+		name = name[:loc[0]]
+		name, _ = splitOnLastPeriod(name)
+		return name, fnName
+	}
+
+	pkg, fn := splitOnLastPeriod(name)
+	fn = strings.TrimSuffix(fn, "-fm") // Bound methods.
+	return pkg, fn
 }

@@ -284,3 +284,55 @@ func Test_splitOnLastPeriod_tabular(t *testing.T) {
 		})
 	}
 }
+
+func Test_funcPkg_tabular(t *testing.T) {
+	tt := []struct {
+		testN string
+
+		name  string
+		wPkg  string
+		wName string
+	}{
+		{
+			"empty",
+			"",
+			"",
+			"",
+		},
+		{
+			"SDK function",
+			"reflect.DeepEqual",
+			"reflect",
+			"DeepEqual",
+		},
+		{
+			"external function",
+			"github.com/ctx42/testing/pkg/check.After",
+			"github.com/ctx42/testing/pkg/check",
+			"After",
+		},
+		{
+			"anonymous function",
+			"github.com/ctx42/mirror/pkg/mirror.Test_NewValueMetadata.func5",
+			"github.com/ctx42/mirror/pkg/mirror",
+			"func5",
+		},
+		{
+			"anonymous function",
+			"github.com/ctx42/mirror/pkg/mirror.Test_NewValueMetadata.func6.2",
+			"github.com/ctx42/mirror/pkg/mirror",
+			"func6.2",
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.testN, func(t *testing.T) {
+			// --- When ---
+			hPkg, hName := funcPkg(tc.name)
+
+			// --- Then ---
+			assert.Equal(t, tc.wPkg, hPkg)
+			assert.Equal(t, tc.wName, hName)
+		})
+	}
+}

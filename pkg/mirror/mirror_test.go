@@ -75,7 +75,33 @@ func Test_ReflectValue(t *testing.T) {
 		// --- Then ---
 		assert.Equal(t, reflect.Func, have.kind)
 		assert.Nil(t, have.fields)
-		assert.Equal(t, "After", have.name)
 		assert.Equal(t, "github.com/ctx42/testing/pkg/check", have.pkg)
+		assert.Equal(t, "After", have.name)
+	})
+
+	t.Run("uses cache", func(t *testing.T) {
+		// --- Given ---
+		dm := ReflectValue(reflect.ValueOf(check.After))
+
+		// --- When ---
+		have := ReflectValue(reflect.ValueOf(check.After))
+
+		// --- Then ---
+		assert.Same(t, dm, have)
+	})
+
+	t.Run("func pointer", func(t *testing.T) {
+		// --- Given ---
+		tst := &TwoStr{}
+		val := reflect.ValueOf(tst)
+
+		// --- When ---
+		have := ReflectValue(val)
+
+		// --- Then ---
+		assert.Equal(t, reflect.Struct, have.kind)
+		assert.NotNil(t, have.fields)
+		assert.Equal(t, "github.com/ctx42/mirror/pkg/mirror", have.pkg)
+		assert.Equal(t, "TwoStr", have.name)
 	})
 }

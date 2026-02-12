@@ -13,8 +13,8 @@ type Metadata struct {
 	typ    reflect.Type // Struct type (after indirect).
 	kind   reflect.Kind // Struct kind.
 	fields []*Field     // Struct fields. Nil when the struct has no fields.
+	pkg    string       // Type import string may be empty.
 	name   string       // Type name when, may be empty.
-	pkg    string       // Type import string, may be empty.
 }
 
 // NewMetadata extracts [Metadata] about type of "v". Panics for nil value.
@@ -22,15 +22,15 @@ func NewMetadata(v any) *Metadata {
 	return NewTypeMetadata(reflect.TypeOf(v))
 }
 
-// NewTypeMetadata extracts [Metadata] for the type. Panics when type represents
-// nil value.
+// NewTypeMetadata extracts [Metadata] for the type. Panics when the type
+// represents nil value.
 func NewTypeMetadata(typ reflect.Type) *Metadata {
 	typ = indirect(typ)
 	md := &Metadata{
 		typ:  typ,
 		kind: typ.Kind(),
-		name: typ.Name(),
 		pkg:  typ.PkgPath(),
+		name: typ.Name(),
 	}
 	if md.IsStruct() {
 		md.getFields()
@@ -46,7 +46,7 @@ func NewValueMetadata(val reflect.Value) *Metadata {
 		if val.IsValid() && val.Pointer() != 0 {
 			if fn := runtime.FuncForPC(val.Pointer()); fn != nil {
 				name := fn.Name()
-				md.pkg, md.name = splitOnLastPeriod(name)
+				md.pkg, md.name = funcPkg(name)
 			}
 		}
 	}
@@ -59,11 +59,14 @@ func (md *Metadata) Type() reflect.Type { return md.typ }
 // Kind returns struct kind.
 func (md *Metadata) Kind() reflect.Kind { return md.kind }
 
-// Name returns type name. May return empty string.
+// Package returns import string for the type. May return an empty string.
+func (md *Metadata) Package() string { return md.pkg }
+
+// Name returns type name. May return an empty string.
 func (md *Metadata) Name() string { return md.name }
 
-// Package returns import string for the type. May return empty string.
-func (md *Metadata) Package() string { return md.pkg }
+// PackageAndName returns full type name including package.
+func (md *Metadata) PackageAndName() string { return md.pkg + "." + md.name }
 
 // IsStruct returns true if the type is a struct, otherwise false.
 func (md *Metadata) IsStruct() bool {
