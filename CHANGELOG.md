@@ -1,3 +1,6 @@
+## v0.3.2 (Sun, 26 Apr 2026 13:34:10 UTC)
+- chore: Update dependencies.
+
 ## v0.3.1 (Thu, 12 Feb 2026 13:51:08 UTC)
 - style: Remove unneeded test case.
 - chore: Update dependencies.
