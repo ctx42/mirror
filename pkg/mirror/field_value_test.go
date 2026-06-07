@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/ctx42/testing/pkg/assert"
-	"github.com/ctx42/testing/pkg/kit/reflectkit"
+	"github.com/ctx42/testkit/pkg/reflectkit"
 )
 
 func Test_NewFieldValue(t *testing.T) {
@@ -190,7 +190,7 @@ func Test_FieldValue_NewIfNil(t *testing.T) {
 		assert.Same(t, fv, have)
 	})
 
-	t.Run("pointer to build in type", func(t *testing.T) {
+	t.Run("pointer to built-in type", func(t *testing.T) {
 		// --- Given ---
 		s := &struct{ F *float64 }{}
 		fld := NewField(reflectkit.GetField(t, s, "F"))

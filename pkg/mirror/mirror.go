@@ -26,18 +26,17 @@ var (
 )
 
 var (
-	typCache   map[reflect.Type]*Metadata // Type metadata cache.
-	typCacheMX sync.RWMutex               // Guards typCache.
+	typCache   = map[reflect.Type]*Metadata{} // Type metadata cache.
+	typCacheMX sync.RWMutex                   // Guards typCache.
 )
 
-func init() { typCache = map[reflect.Type]*Metadata{} }
-
-// Reflect extracts [Metadata] about type of "v".
+// Reflect extracts [Metadata] about type of "v". Panics if v is an untyped
+// nil.
 func Reflect(v any) *Metadata {
 	return ReflectType(reflect.TypeOf(v))
 }
 
-// ReflectType extracts [Metadata] about the type.
+// ReflectType extracts [Metadata] about the type. Panics if typ is nil.
 func ReflectType(typ reflect.Type) *Metadata {
 	if typ.Kind() == reflect.Ptr {
 		typ = typ.Elem()

@@ -6,6 +6,7 @@ package mirror
 import (
 	"bytes"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/ctx42/testing/pkg/assert"
@@ -158,7 +159,10 @@ func Test_NewValueMetadata(t *testing.T) {
 
 		// --- Then ---
 		assert.Equal(t, "github.com/ctx42/mirror/pkg/mirror", have.pkg)
-		assert.Equal(t, "func7.1", have.name)
+		// The runtime-assigned function index shifts when the test
+		// file changes, so assert the pattern instead of a literal.
+		assert.True(t, strings.HasPrefix(have.name, "func") &&
+			strings.Contains(have.name, "."))
 	})
 
 	t.Run("method", func(t *testing.T) {

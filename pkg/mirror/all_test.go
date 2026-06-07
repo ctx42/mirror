@@ -39,27 +39,3 @@ type TStruct struct {
 	SNil  *TwoStr
 }
 
-// NewTStruct returns TStruct with default values.
-func NewTStruct() TStruct {
-	FpStr := "TStruct.FpStr"
-	PtrTwoStrFStrPtr := "ptr.TwoStr.FpStr"
-	ValTwoStrFStrPtr := "val.TwoStr.FpStr"
-
-	return TStruct{
-		FStr:  "FStr",
-		FpStr: &FpStr,
-		FsStr: []string{"0", "1", "2"},
-		FaStr: [4]string{"0", "1", "2", "3"},
-		FmStr: map[int]string{1: "v1", 3: "vs"},
-		fStr:  "fStr",
-		SPtr: &TwoStr{
-			FStr:    "ptr.TwoStr.FStr",
-			FStrPtr: &PtrTwoStrFStrPtr,
-		},
-		SVal: TwoStr{
-			FStr:    "val.TwoStr.FStr",
-			FStrPtr: &ValTwoStrFStrPtr,
-		},
-		SNil: nil,
-	}
-}

@@ -56,7 +56,7 @@ func NewValueMetadata(val reflect.Value) *Metadata {
 // Type returns struct type.
 func (md *Metadata) Type() reflect.Type { return md.typ }
 
-// Kind returns struct kind.
+// Kind returns the reflect.Kind of the underlying type.
 func (md *Metadata) Kind() reflect.Kind { return md.kind }
 
 // Package returns import string for the type. May return an empty string.

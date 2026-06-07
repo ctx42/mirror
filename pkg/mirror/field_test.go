@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/ctx42/testing/pkg/assert"
-	"github.com/ctx42/testing/pkg/kit/reflectkit"
+	"github.com/ctx42/testkit/pkg/reflectkit"
 )
 
 func Test_NewField(t *testing.T) {

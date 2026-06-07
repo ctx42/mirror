@@ -17,7 +17,8 @@ type Field struct {
 	exported   bool                // Is a field exported?
 	sliceOfPtr bool                // Is a slice of pointers?
 	sliceOrArr bool                // Is slice or array?
-	index      []int               // Index sequence for [reflect.Type.FieldByIndex].
+	// Index sequence for [reflect.Type.FieldByIndex].
+	index []int
 	tags       []Tag               // Additional tag options.
 }
 
@@ -67,7 +68,8 @@ func (fld *Field) Tag(key string) Tag {
 	return Tag{field: fld.sf.Name}
 }
 
-// IsValid returns true for fields that may appear in names to struct fields.
+// IsValid returns false for interface fields and anonymous (embedded) fields;
+// true for all others.
 func (fld *Field) IsValid() bool { return !fld.IsInterface() && !fld.anonymous }
 
 // IsExported returns true if the name starts with uppercase (i.e. field is
