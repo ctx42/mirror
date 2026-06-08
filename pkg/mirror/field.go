@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: (c) 2025 Rafal Zajac <rzajac@gmail.com>
+// SPDX-FileCopyrightText: (c) 2026 Rafal Zajac
 // SPDX-License-Identifier: MIT
 
 package mirror
@@ -17,12 +17,12 @@ type Field struct {
 	exported   bool                // Is a field exported?
 	sliceOfPtr bool                // Is a slice of pointers?
 	sliceOrArr bool                // Is slice or array?
-	// Index sequence for [reflect.Type.FieldByIndex].
-	index []int
-	tags       []Tag               // Additional tag options.
+
+	index []int // Index sequence for [reflect.Type.FieldByIndex].
+	tags  []Tag // Additional tag options.
 }
 
-// NewField returns new instance of struct field.
+// NewField returns a new instance of the struct field.
 func NewField(sf reflect.StructField) *Field {
 	kind := sf.Type.Kind()
 	fld := &Field{
