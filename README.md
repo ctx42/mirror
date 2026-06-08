@@ -12,6 +12,7 @@
   * [Accessing Cached Field Tags](#accessing-cached-field-tags)
   * [Setting Struct Fields](#setting-struct-fields)
   * [Getting Struct Field Value](#getting-struct-field-value)
+  * [Accessing a Function or Method Value](#accessing-a-function-or-method-value)
 <!-- TOC -->
 
 # Mirror: Cached Struct Reflection for Go
@@ -54,6 +55,7 @@ The `Reflect` function accepts a struct pointer and caches its metadata.
 Subsequent calls with the same struct type retrieve the cached metadata,
 improving performance.
 
+<!-- gmdoceg:ExampleReflect -->
 ```go
 s := &struct {
     F1 int
@@ -80,46 +82,48 @@ fmt.Printf("field by name: %s\n", smd.FieldByName("f4").Name())
 
 ## Accessing Cached Field
 
-Field metadata is cached alongside the struct metadata, providing a simple 
+Field metadata is cached alongside the struct metadata, providing a simple
 interface to inspect field properties.
 
+<!-- gmdoceg:ExampleReflect_field -->
 ```go
-s := &struct{ f1 time.Time }{}
-smd := mirror.Reflect(s)
+s := &struct{ f4 time.Time }{}
 
-field := smd.FieldByName("f1")
-fmt.Printf("f1 type: %v\n", field.Type().String())
-fmt.Printf("f1 kind: %v\n", field.Kind().String())
-fmt.Printf("f1 index: %v\n", field.Index())
-fmt.Printf("f1 name: %v\n", field.Name())
-fmt.Printf("f1 valid: %v\n", field.IsValid())
-fmt.Printf("f1 exported: %v\n", field.IsExported())
-fmt.Printf("f1 slice: %v\n", field.IsSlice())
-fmt.Printf("f1 array: %v\n", field.IsArray())
-fmt.Printf("f1 slice or array: %v\n", field.IsSliceOrArray())
-fmt.Printf("f1 map: %v\n", field.IsMap())
-fmt.Printf("f1 interface: %v\n", field.IsInterface())
-fmt.Printf("f1 anonymous: %v\n", field.IsAnonymous())
+smd := mirror.Reflect(s)
+field := smd.FieldByName("f4")
+fmt.Printf("f4 type: %v\n", field.Type().String())
+fmt.Printf("f4 kind: %v\n", field.Kind().String())
+fmt.Printf("f4 index: %v\n", field.Index())
+fmt.Printf("f4 name: %v\n", field.Name())
+fmt.Printf("f4 valid: %v\n", field.IsValid())
+fmt.Printf("f4 exported: %v\n", field.IsExported())
+fmt.Printf("f4 slice: %v\n", field.IsSlice())
+fmt.Printf("f4 array: %v\n", field.IsArray())
+fmt.Printf("f4 slice or array: %v\n", field.IsSliceOrArray())
+fmt.Printf("f4 map: %v\n", field.IsMap())
+fmt.Printf("f4 interface: %v\n", field.IsInterface())
+fmt.Printf("f4 anonymous: %v\n", field.IsAnonymous())
 
 // Output:
-// f1 type: time.Time
-// f1 kind: struct
-// f1 index: [0]
-// f1 name: f1
-// f1 valid: true
-// f1 exported: false
-// f1 slice: false
-// f1 array: false
-// f1 slice or array: false
-// f1 map: false
-// f1 interface: false
-// f1 anonymous: false
+// f4 type: time.Time
+// f4 kind: struct
+// f4 index: [0]
+// f4 name: f4
+// f4 valid: true
+// f4 exported: false
+// f4 slice: false
+// f4 array: false
+// f4 slice or array: false
+// f4 map: false
+// f4 interface: false
+// f4 anonymous: false
 ```
 
 ## Accessing Cached Field Tags
 
 You can access and inspect struct field tags using the cached metadata.
 
+<!-- gmdoceg:ExampleReflect_tag -->
 ```go
 s := &struct {
     F1 int `my:"t1,t2, t3"`
@@ -141,11 +145,14 @@ fmt.Printf("F1 tag `my` ignored: %v\n", tag.IsIgnored())
 
 ## Setting Struct Fields
 
-The `mirror` library allows you to set struct field values fast by using cached 
+The `mirror` library allows you to set struct field values fast by using cached
 metadata, with support for initializing nil pointer fields.
 
+<!-- gmdoceg:ExampleStructValue_set -->
 ```go
-s := &struct { F1 *int }{}
+s := &struct {
+	F1 *int
+}{}
 
 smd := mirror.NewStructValue(s)
 field := smd.FieldByName("F1")
@@ -160,6 +167,7 @@ fmt.Printf("F1 value: %d\n", *s.F1)
 
 ## Getting Struct Field Value
 
+<!-- gmdoceg:ExampleFieldValue_Get -->
 ```go
 s := &struct {
     F1 int
@@ -174,4 +182,25 @@ value, _ := field.Get()
 fmt.Printf("F1 value: %v\n", value)
 // Output:
 // F1 value: 42
+```
+
+## Accessing a Function or Method Value
+
+`ReflectValue` resolves package path and name for any function or method value,
+including anonymous closures.
+
+<!-- gmdoceg:ExampleReflectValue -->
+```go
+val := reflect.ValueOf(check.After)
+md := mirror.ReflectValue(val)
+
+fmt.Printf("type   : %s\n", md.Type().String())
+fmt.Printf("kind   : %s\n", md.Kind().String())
+fmt.Printf("name   : %s\n", md.Name())
+fmt.Printf("package: %s\n", md.Package())
+// Output:
+// type   : func(interface {}, interface {}, ...interface {}) error
+// kind   : func
+// name   : After
+// package: github.com/ctx42/testing/pkg/check
 ```
