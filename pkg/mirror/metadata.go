@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: (c) 2025 Rafal Zajac <rzajac@gmail.com>
+// SPDX-FileCopyrightText: (c) 2026 Rafal Zajac
 // SPDX-License-Identifier: MIT
 
 package mirror
@@ -10,11 +10,12 @@ import (
 
 // Metadata represents struct metadata.
 type Metadata struct {
-	typ    reflect.Type // Struct type (after indirect).
-	kind   reflect.Kind // Struct kind.
-	fields []*Field     // Struct fields. Nil when the struct has no fields.
-	pkg    string       // Type import string may be empty.
-	name   string       // Type name when, may be empty.
+	typ      reflect.Type   // Struct type (after indirect).
+	kind     reflect.Kind   // Struct kind.
+	fields   []*Field       // Struct fields. Nil when the struct has no fields.
+	fieldIdx map[string]int // Field name to fields slice index.
+	pkg      string         // Type import string may be empty.
+	name     string         // Type name when, may be empty.
 }
 
 // NewMetadata extracts [Metadata] about type of "v". Panics for nil value.
@@ -78,10 +79,8 @@ func (md *Metadata) Fields() []*Field { return md.fields }
 
 // FieldByName returns a struct field by name or nil if the field doesn't exist.
 func (md *Metadata) FieldByName(name string) *Field {
-	for _, fld := range md.fields {
-		if fld.Name() == name {
-			return fld
-		}
+	if i, ok := md.fieldIdx[name]; ok {
+		return md.fields[i]
 	}
 	return nil
 }
@@ -102,7 +101,9 @@ func (md *Metadata) getFields() {
 		return
 	}
 	md.fields = make([]*Field, nf)
+	md.fieldIdx = make(map[string]int, nf)
 	for i := 0; i < nf; i++ {
 		md.fields[i] = NewField(md.typ.Field(i))
+		md.fieldIdx[md.fields[i].Name()] = i
 	}
 }

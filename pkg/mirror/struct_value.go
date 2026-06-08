@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: (c) 2025 Rafal Zajac <rzajac@gmail.com>
+// SPDX-FileCopyrightText: (c) 2026 Rafal Zajac
 // SPDX-License-Identifier: MIT
 
 package mirror
@@ -57,14 +57,16 @@ func (sv *StructValue) NumField() int { return sv.Type().NumField() }
 
 // FieldByName returns a struct field or nil if the field does not exist.
 func (sv *StructValue) FieldByName(name string) *FieldValue {
+	fld := sv.metadata.FieldByName(name)
+	if fld == nil {
+		return nil
+	}
 	val := sv.value
 	if sv.IsPtr() {
 		val = val.Elem()
 	}
-	if val = val.FieldByName(name); val.IsValid() {
-		if fld := sv.metadata.FieldByName(name); fld != nil {
-			return NewFieldValue(fld, val)
-		}
+	if val = val.Field(fld.index[0]); val.IsValid() {
+		return NewFieldValue(fld, val)
 	}
 	return nil
 }
