@@ -1,3 +1,10 @@
+## v0.5.0 (Mon, 08 Jun 2026 07:20:31 UTC)
+- chore: bump deps, fix godoc errors, and clean up tests.
+- perf: add benchmarks.
+- perf: add field name index for O(1) FieldByName lookups.
+- docs: sync README examples with gmdoceg markers.
+- chore: update copyright year to 2026 and bump testkit to v0.3.1.
+
 ## v0.4.0 (Fri, 01 May 2026 19:27:03 UTC)
 - chore: Update to Go 1.26 and update dependencies.
 
