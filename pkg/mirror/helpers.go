@@ -33,7 +33,7 @@ func Ptr[T any](v T) *T { return &v }
 // This is a modification of the Parse function from the repository:
 // https://github.com/fatih/structtag
 //
-// nolint: gocognit, cyclop
+//nolint:gocognit,cyclop
 func ParseTags(fieldName, stag string) ([]Tag, error) {
 	hasTag := stag != ""
 	if !hasTag {
