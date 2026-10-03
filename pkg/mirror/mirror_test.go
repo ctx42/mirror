@@ -190,6 +190,17 @@ func Test_ReflectValue(t *testing.T) {
 		assert.Equal(t, "fy", have.Name())
 		assert.Equal(t, reflect.Func, have.Kind())
 	})
+
+	t.Run("invalid value", func(t *testing.T) {
+		// --- Given ---
+		val := reflect.Value{}
+
+		// --- When ---
+		act := func() { ReflectValue(val) }
+
+		// --- Then ---
+		assert.PanicContain(t, "mirror: ReflectValue of invalid value", act)
+	})
 }
 
 func fxA(int) int { return 1 }

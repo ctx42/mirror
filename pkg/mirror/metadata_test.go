@@ -204,6 +204,17 @@ func Test_NewValueMetadata(t *testing.T) {
 		assert.Equal(t, "bytes.(*Buffer)", have.pkg)
 		assert.Equal(t, "String", have.name)
 	})
+
+	t.Run("invalid value", func(t *testing.T) {
+		// --- Given ---
+		val := reflect.Value{}
+
+		// --- When ---
+		act := func() { NewValueMetadata(val) }
+
+		// --- Then ---
+		assert.PanicContain(t, "mirror: NewValueMetadata of invalid value", act)
+	})
 }
 
 func Test_Metadata_Type(t *testing.T) {

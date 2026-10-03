@@ -50,7 +50,11 @@ func ReflectType(typ reflect.Type) *Metadata {
 
 // ReflectValue extracts [Metadata] about the value.
 // A function value keeps the runtime name of that function.
+// Panics when val is the zero [reflect.Value].
 func ReflectValue(val reflect.Value) *Metadata {
+	if !val.IsValid() {
+		panic("mirror: ReflectValue of invalid value")
+	}
 	if fn, ok := funcValue(val); ok {
 		return cachedFunc(fn)
 	}

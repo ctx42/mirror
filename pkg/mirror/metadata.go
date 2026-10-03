@@ -41,7 +41,11 @@ func NewTypeMetadata(typ reflect.Type) *Metadata {
 }
 
 // NewValueMetadata extracts [Metadata] about type of "v".
+// Panics when val is the zero [reflect.Value].
 func NewValueMetadata(val reflect.Value) *Metadata {
+	if !val.IsValid() {
+		panic("mirror: NewValueMetadata of invalid value")
+	}
 	typ := val.Type()
 	md := NewTypeMetadata(typ)
 	if md.kind == reflect.Func && md.name == "" {
