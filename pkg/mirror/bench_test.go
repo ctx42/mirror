@@ -43,7 +43,7 @@ func BenchmarkReflect_Concurrent(b *testing.B) {
 // BenchmarkMetadata_FieldByName measures the linear scan cost of
 // Metadata.FieldByName for a small and a large struct.
 func BenchmarkMetadata_FieldByName(b *testing.B) {
-	b.Run("small_2fields/hit_first", func(b *testing.B) {
+	b.Run("small_2fields_hit_first", func(b *testing.B) {
 		md := Reflect(&TwoStr{})
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -52,7 +52,7 @@ func BenchmarkMetadata_FieldByName(b *testing.B) {
 		}
 	})
 
-	b.Run("small_2fields/hit_last", func(b *testing.B) {
+	b.Run("small_2fields_hit_last", func(b *testing.B) {
 		md := Reflect(&TwoStr{})
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -61,7 +61,7 @@ func BenchmarkMetadata_FieldByName(b *testing.B) {
 		}
 	})
 
-	b.Run("wide_20fields/hit_first", func(b *testing.B) {
+	b.Run("wide_20fields_hit_first", func(b *testing.B) {
 		md := Reflect(&wide20{})
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -70,7 +70,7 @@ func BenchmarkMetadata_FieldByName(b *testing.B) {
 		}
 	})
 
-	b.Run("wide_20fields/hit_last", func(b *testing.B) {
+	b.Run("wide_20fields_hit_last", func(b *testing.B) {
 		md := Reflect(&wide20{})
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -79,7 +79,7 @@ func BenchmarkMetadata_FieldByName(b *testing.B) {
 		}
 	})
 
-	b.Run("wide_20fields/miss", func(b *testing.B) {
+	b.Run("wide_20fields_miss", func(b *testing.B) {
 		md := Reflect(&wide20{})
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -93,7 +93,7 @@ func BenchmarkMetadata_FieldByName(b *testing.B) {
 // StructValue.FieldByName, which calls both reflect.Value.FieldByName (O(n))
 // and Metadata.FieldByName (O(n)) on every call.
 func BenchmarkStructValue_FieldByName(b *testing.B) {
-	b.Run("small_2fields/hit_first", func(b *testing.B) {
+	b.Run("small_2fields_hit_first", func(b *testing.B) {
 		sv := NewStructValue(&TwoStr{})
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -102,7 +102,7 @@ func BenchmarkStructValue_FieldByName(b *testing.B) {
 		}
 	})
 
-	b.Run("small_2fields/hit_last", func(b *testing.B) {
+	b.Run("small_2fields_hit_last", func(b *testing.B) {
 		sv := NewStructValue(&TwoStr{})
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -111,7 +111,7 @@ func BenchmarkStructValue_FieldByName(b *testing.B) {
 		}
 	})
 
-	b.Run("wide_20fields/hit_first", func(b *testing.B) {
+	b.Run("wide_20fields_hit_first", func(b *testing.B) {
 		sv := NewStructValue(&wide20{})
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -120,7 +120,7 @@ func BenchmarkStructValue_FieldByName(b *testing.B) {
 		}
 	})
 
-	b.Run("wide_20fields/hit_last", func(b *testing.B) {
+	b.Run("wide_20fields_hit_last", func(b *testing.B) {
 		sv := NewStructValue(&wide20{})
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -133,7 +133,7 @@ func BenchmarkStructValue_FieldByName(b *testing.B) {
 // BenchmarkStructValue_FieldByIndex establishes the O(1) baseline for
 // index-based lookup to compare against FieldByName.
 func BenchmarkStructValue_FieldByIndex(b *testing.B) {
-	b.Run("wide_20fields/first", func(b *testing.B) {
+	b.Run("wide_20fields_first", func(b *testing.B) {
 		sv := NewStructValue(&wide20{})
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -142,7 +142,7 @@ func BenchmarkStructValue_FieldByIndex(b *testing.B) {
 		}
 	})
 
-	b.Run("wide_20fields/last", func(b *testing.B) {
+	b.Run("wide_20fields_last", func(b *testing.B) {
 		sv := NewStructValue(&wide20{})
 		b.ReportAllocs()
 		b.ResetTimer()
