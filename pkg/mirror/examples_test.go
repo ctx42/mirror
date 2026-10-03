@@ -91,7 +91,7 @@ func ExampleReflect_tag() {
 
 	smd := mirror.Reflect(s)
 	field := smd.FieldByName("F1")
-	tag := field.Tag("my")
+	tag, _ := field.Tag("my")
 
 	fmt.Printf("F1 tag `my` key: %s\n", tag.Key())
 	fmt.Printf("F1 tag `my` name: %s\n", tag.Name())
@@ -147,10 +147,7 @@ func ExampleReflectType() {
 }
 
 func ExampleParseTags() {
-	tags, err := mirror.ParseTags("F", `json:"name,omitempty"`)
-	if err != nil {
-		panic(err)
-	}
+	tags, _ := mirror.ParseTags("F", `json:"name,omitempty"`)
 
 	fmt.Printf("key: %s\n", tags[0].Key())
 	fmt.Printf("name: %s\n", tags[0].Name())
@@ -183,4 +180,16 @@ func ExampleStructValue_NewIfNil() {
 	// Output:
 	// nil: false
 	// zero: 0
+}
+
+func ExampleField_Tag() {
+	s := &struct {
+		Age int `json:age`
+	}{}
+	fld := mirror.Reflect(s).FieldByName("Age")
+	_, err := fld.Tag("json")
+
+	fmt.Println(err)
+	// Output:
+	// struct field tag syntax error
 }

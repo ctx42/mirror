@@ -128,7 +128,9 @@ fmt.Printf("f4 anonymous: %v\n", field.IsAnonymous())
 
 ## Accessing Cached Field Tags
 
-`Tag` reads one struct tag by its key.
+`Tag` returns the tag for a key. A missing key is a zero tag and a nil
+error. A tag string that failed to parse returns a zero tag and
+`ErrTagSyntax`.
 
 <!-- gmmce:pkg/mirror/ExampleReflect_tag -->
 ```go
@@ -138,7 +140,7 @@ s := &struct {
 
 smd := mirror.Reflect(s)
 field := smd.FieldByName("F1")
-tag := field.Tag("my")
+tag, _ := field.Tag("my")
 
 fmt.Printf("F1 tag `my` key: %s\n", tag.Key())
 fmt.Printf("F1 tag `my` name: %s\n", tag.Name())

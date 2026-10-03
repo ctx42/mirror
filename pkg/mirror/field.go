@@ -18,8 +18,9 @@ type Field struct {
 	sliceOfPtr bool                // Is a slice of pointers?
 	sliceOrArr bool                // Is slice or array?
 
-	index []int // Index sequence for [reflect.Type.FieldByIndex].
-	tags  []Tag // Additional tag options.
+	index  []int // Index sequence for [reflect.Type.FieldByIndex].
+	tags   []Tag // Additional tag options.
+	tagErr error // Error from parsing the struct tag.
 }
 
 // NewField returns a new instance of the struct field.
@@ -35,7 +36,7 @@ func NewField(sf reflect.StructField) *Field {
 		sliceOrArr: kind == reflect.Slice || kind == reflect.Array,
 		index:      sf.Index,
 	}
-	fld.tags, _ = ParseTags(fld.sf.Name, string(fld.sf.Tag))
+	fld.tags, fld.tagErr = ParseTags(fld.sf.Name, string(fld.sf.Tag))
 	if fld.sliceOrArr && sf.Type.Elem().Kind() == reflect.Pointer {
 		fld.sliceOfPtr = true
 	}
@@ -59,15 +60,18 @@ func (fld *Field) Index() []int { return slices.Clone(fld.index) }
 
 func (fld *Field) Name() string { return fld.sf.Name }
 
-// Tag returns tag by name, if the tag doesn't exist, it returns a tag for
-// which the [Tag.IsZero] method returns true.
-func (fld *Field) Tag(key string) Tag {
+// Tag returns a zero tag and a nil error when key is missing.
+// A struct tag that failed to parse returns a zero tag and [ErrTagSyntax].
+func (fld *Field) Tag(key string) (Tag, error) {
+	if fld.tagErr != nil {
+		return Tag{field: fld.sf.Name}, fld.tagErr
+	}
 	for _, tag := range fld.tags {
 		if tag.key == key {
-			return tag
+			return tag, nil
 		}
 	}
-	return Tag{field: fld.sf.Name}
+	return Tag{field: fld.sf.Name}, nil
 }
 
 // IsValid returns false for interface fields and anonymous (embedded) fields;

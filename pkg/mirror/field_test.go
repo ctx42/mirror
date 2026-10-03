@@ -146,7 +146,7 @@ func Test_Field_Tag(t *testing.T) {
 		fld := NewField(sf)
 
 		// --- When ---
-		have := fld.Tag("tag")
+		have, err := fld.Tag("tag")
 
 		// --- Then ---
 		want := Tag{
@@ -155,6 +155,7 @@ func Test_Field_Tag(t *testing.T) {
 			name:    "t1",
 			options: []string{"t2", "t3"},
 		}
+		assert.NoError(t, err)
 		assert.Equal(t, want, have)
 	})
 
@@ -167,10 +168,76 @@ func Test_Field_Tag(t *testing.T) {
 		fld := NewField(sf)
 
 		// --- When ---
-		have := fld.Tag("other")
+		have, err := fld.Tag("other")
 
 		// --- Then ---
+		assert.NoError(t, err)
 		assert.True(t, have.IsZero())
+	})
+
+	t.Run("empty", func(t *testing.T) {
+		// --- Given ---
+		s := &struct{ Name string }{}
+		fld := NewField(reflectkit.GetField(t, s, "Name"))
+
+		// --- When ---
+		have, err := fld.Tag("json")
+
+		// --- Then ---
+		assert.NoError(t, err)
+		assert.True(t, have.IsZero())
+	})
+
+	t.Run("error - malformed", func(t *testing.T) {
+		// --- Given ---
+		s := &struct {
+			Age int `json:age`
+		}{}
+		fld := NewField(reflectkit.GetField(t, s, "Age"))
+
+		// --- When ---
+		have, err := fld.Tag("json")
+
+		// --- Then ---
+		assert.ErrorIs(t, ErrTagSyntax, err)
+		assert.True(t, have.IsZero())
+	})
+
+	t.Run("error - later tag", func(t *testing.T) {
+		// --- Given ---
+		s := &struct {
+			Name string `json:"name" xml:bad`
+		}{}
+		fld := NewField(reflectkit.GetField(t, s, "Name"))
+
+		// --- When ---
+		have, err := fld.Tag("json")
+
+		// --- Then ---
+		assert.ErrorIs(t, ErrTagSyntax, err)
+		assert.True(t, have.IsZero())
+	})
+
+	t.Run("sibling field", func(t *testing.T) {
+		// --- Given ---
+		s := &struct {
+			Name string `json:"name"`
+			Age  int    `json:age`
+		}{}
+		md := Reflect(s)
+		fld := md.FieldByName("Age")
+		name := md.FieldByName("Name")
+
+		// --- When ---
+		have, err := fld.Tag("json")
+
+		// --- Then ---
+		assert.ErrorIs(t, ErrTagSyntax, err)
+		assert.True(t, have.IsZero())
+
+		nameTag, nameErr := name.Tag("json")
+		assert.NoError(t, nameErr)
+		assert.Equal(t, "name", nameTag.Name())
 	})
 }
 
