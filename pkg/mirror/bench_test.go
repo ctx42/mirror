@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-// wide20 is a struct with 20 fields — exercises the O(n) FieldByName path.
+// wide20 is a struct with 20 fields used to time FieldByName.
 type wide20 struct {
 	F00, F01, F02, F03, F04 string
 	F05, F06, F07, F08, F09 string
@@ -40,8 +40,7 @@ func BenchmarkReflect_Concurrent(b *testing.B) {
 	})
 }
 
-// BenchmarkMetadata_FieldByName measures the linear scan cost of
-// Metadata.FieldByName for a small and a large struct.
+// BenchmarkMetadata_FieldByName times the map lookup in FieldByName.
 func BenchmarkMetadata_FieldByName(b *testing.B) {
 	b.Run("small_2fields_hit_first", func(b *testing.B) {
 		md := Reflect(&TwoStr{})
@@ -89,9 +88,8 @@ func BenchmarkMetadata_FieldByName(b *testing.B) {
 	})
 }
 
-// BenchmarkStructValue_FieldByName measures the double-linear-search cost of
-// StructValue.FieldByName, which calls both reflect.Value.FieldByName (O(n))
-// and Metadata.FieldByName (O(n)) on every call.
+// BenchmarkStructValue_FieldByName times index lookup on a struct value.
+// It uses the cached field index and reflect.Value.Field.
 func BenchmarkStructValue_FieldByName(b *testing.B) {
 	b.Run("small_2fields_hit_first", func(b *testing.B) {
 		sv := NewStructValue(&TwoStr{})
