@@ -16,7 +16,6 @@ type skip that work.
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
   * [Usage](#usage)
-  * [Accessing Cached Struct](#accessing-cached-struct)
   * [Accessing Cached Field](#accessing-cached-field)
   * [Accessing Cached Field Tags](#accessing-cached-field-tags)
   * [Setting Struct Fields](#setting-struct-fields)
@@ -56,9 +55,7 @@ func ReflectType(typ reflect.Type) *Metadata
 func ReflectValue(val reflect.Value) *Metadata
 ```
 
-## Accessing Cached Struct
-
-`Reflect` accepts any non-nil value. It follows every pointer and caches the
+`Reflect` accepts any value. It follows every pointer and caches the
 metadata for that type. A later call with the same type returns the cached
 metadata. An untyped nil panics.
 
@@ -102,28 +99,14 @@ fmt.Printf("f4 type: %v\n", field.Type().String())
 fmt.Printf("f4 kind: %v\n", field.Kind().String())
 fmt.Printf("f4 index: %v\n", field.Index())
 fmt.Printf("f4 name: %v\n", field.Name())
-fmt.Printf("f4 valid: %v\n", field.IsValid())
 fmt.Printf("f4 exported: %v\n", field.IsExported())
-fmt.Printf("f4 slice: %v\n", field.IsSlice())
-fmt.Printf("f4 array: %v\n", field.IsArray())
-fmt.Printf("f4 slice or array: %v\n", field.IsSliceOrArray())
-fmt.Printf("f4 map: %v\n", field.IsMap())
-fmt.Printf("f4 interface: %v\n", field.IsInterface())
-fmt.Printf("f4 anonymous: %v\n", field.IsAnonymous())
 
 // Output:
 // f4 type: time.Time
 // f4 kind: struct
 // f4 index: [0]
 // f4 name: f4
-// f4 valid: true
 // f4 exported: false
-// f4 slice: false
-// f4 array: false
-// f4 slice or array: false
-// f4 map: false
-// f4 interface: false
-// f4 anonymous: false
 ```
 
 ## Accessing Cached Field Tags
@@ -154,8 +137,8 @@ fmt.Printf("F1 tag `my` ignored: %v\n", tag.IsIgnored())
 
 ## Setting Struct Fields
 
-`NewStructValue` wraps a struct pointer. `NewIfNil` initializes a nil pointer
-field before the value is set.
+`NewStructValue` wraps a struct pointer. `NewIfNil` on a field
+initializes a nil pointer, map, or slice before the value is set.
 
 <!-- gmmce:pkg/mirror/ExampleStructValue_set -->
 ```go
@@ -176,7 +159,8 @@ fmt.Printf("F1 value: %d\n", *s.F1)
 
 ## Getting Struct Field Value
 
-`Get` returns the field's current value.
+`Get` returns the field's current value. An interface or embedded field
+returns `ErrInvField`. An unexported field returns `ErrUnexportedField`.
 
 <!-- gmmce:pkg/mirror/ExampleFieldValue_Get -->
 ```go

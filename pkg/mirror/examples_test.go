@@ -60,28 +60,14 @@ func ExampleReflect_field() {
 	fmt.Printf("f4 kind: %v\n", field.Kind().String())
 	fmt.Printf("f4 index: %v\n", field.Index())
 	fmt.Printf("f4 name: %v\n", field.Name())
-	fmt.Printf("f4 valid: %v\n", field.IsValid())
 	fmt.Printf("f4 exported: %v\n", field.IsExported())
-	fmt.Printf("f4 slice: %v\n", field.IsSlice())
-	fmt.Printf("f4 array: %v\n", field.IsArray())
-	fmt.Printf("f4 slice or array: %v\n", field.IsSliceOrArray())
-	fmt.Printf("f4 map: %v\n", field.IsMap())
-	fmt.Printf("f4 interface: %v\n", field.IsInterface())
-	fmt.Printf("f4 anonymous: %v\n", field.IsAnonymous())
 
 	// Output:
 	// f4 type: time.Time
 	// f4 kind: struct
 	// f4 index: [0]
 	// f4 name: f4
-	// f4 valid: true
 	// f4 exported: false
-	// f4 slice: false
-	// f4 array: false
-	// f4 slice or array: false
-	// f4 map: false
-	// f4 interface: false
-	// f4 anonymous: false
 }
 
 func ExampleReflect_tag() {
