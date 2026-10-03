@@ -283,14 +283,49 @@ func Test_Metadata_Name(t *testing.T) {
 }
 
 func Test_Metadata_PackageAndName(t *testing.T) {
-	// --- Given ---
-	md := &Metadata{pkg: "abc", name: "name"}
+	t.Run("package and name", func(t *testing.T) {
+		// --- Given ---
+		md := &Metadata{pkg: "abc", name: "name"}
 
-	// --- When ---
-	have := md.PackageAndName()
+		// --- When ---
+		have := md.PackageAndName()
 
-	// --- Then ---
-	assert.Equal(t, "abc.name", have)
+		// --- Then ---
+		assert.Equal(t, "abc.name", have)
+	})
+
+	t.Run("name only", func(t *testing.T) {
+		// --- Given ---
+		md := NewMetadata(0)
+
+		// --- When ---
+		have := md.PackageAndName()
+
+		// --- Then ---
+		assert.Equal(t, "int", have)
+	})
+
+	t.Run("package only", func(t *testing.T) {
+		// --- Given ---
+		md := &Metadata{pkg: "abc"}
+
+		// --- When ---
+		have := md.PackageAndName()
+
+		// --- Then ---
+		assert.Equal(t, "abc", have)
+	})
+
+	t.Run("neither", func(t *testing.T) {
+		// --- Given ---
+		md := NewMetadata(struct{}{})
+
+		// --- When ---
+		have := md.PackageAndName()
+
+		// --- Then ---
+		assert.Equal(t, "", have)
+	})
 }
 
 func Test_Metadata_IsStruct(t *testing.T) {

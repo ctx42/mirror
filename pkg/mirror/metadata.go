@@ -67,8 +67,17 @@ func (md *Metadata) Package() string { return md.pkg }
 // Name returns type name. May return an empty string.
 func (md *Metadata) Name() string { return md.name }
 
-// PackageAndName returns full type name including package.
-func (md *Metadata) PackageAndName() string { return md.pkg + "." + md.name }
+// PackageAndName returns the package path and the type name joined by a
+// dot. An empty part is omitted.
+func (md *Metadata) PackageAndName() string {
+	if md.pkg == "" {
+		return md.name
+	}
+	if md.name == "" {
+		return md.pkg
+	}
+	return md.pkg + "." + md.name
+}
 
 // IsStruct returns true if the type is a struct, otherwise false.
 func (md *Metadata) IsStruct() bool {
