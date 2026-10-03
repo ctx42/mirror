@@ -212,15 +212,15 @@ func Test_ParseTags_errors_tabular(t *testing.T) {
 
 		tags string
 	}{
-		{"1", `tag`},
-		{"2", `tag:`},
-		{"3", `tag:\n`},
-		{"4", `tag: "\n"`},
-		{"5", ` tag`},
-		{"6", `tag:"a",`},
-		{"7", `tag:"`},
-		{"8", `tag:"""`},
-		{"9", `tag:"\19"`},
+		{"error - missing colon", `tag`},
+		{"error - missing value", `tag:`},
+		{"error - newline after colon", `tag:\n`},
+		{"error - space after colon", `tag: "\n"`},
+		{"error - leading space", ` tag`},
+		{"error - trailing comma", `tag:"a",`},
+		{"error - unclosed quote", `tag:"`},
+		{"error - trailing quote", `tag:"""`},
+		{"error - bad escape", `tag:"\19"`},
 	}
 
 	for _, tc := range tt {

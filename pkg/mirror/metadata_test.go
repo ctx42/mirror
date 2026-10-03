@@ -43,11 +43,11 @@ func Test_NewMetadata(t *testing.T) {
 		assert.Equal(t, "", have.name)
 	})
 
-	t.Run("type of nil panics", func(t *testing.T) {
+	t.Run("error - nil type", func(t *testing.T) {
 		assert.Panic(t, func() { NewMetadata(reflect.TypeOf(nil)) })
 	})
 
-	t.Run("nil panics", func(t *testing.T) {
+	t.Run("error - nil", func(t *testing.T) {
 		assert.Panic(t, func() { NewMetadata(nil) })
 	})
 
