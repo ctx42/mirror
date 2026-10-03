@@ -33,7 +33,7 @@ func NewTypeMetadata(typ reflect.Type) *Metadata {
 		pkg:  typ.PkgPath(),
 		name: typ.Name(),
 	}
-	if md.IsStruct() {
+	if md.kind == reflect.Struct {
 		md.getFields()
 	}
 	return md
@@ -71,7 +71,7 @@ func (md *Metadata) PackageAndName() string { return md.pkg + "." + md.name }
 
 // IsStruct returns true if the type is a struct, otherwise false.
 func (md *Metadata) IsStruct() bool {
-	return indirect(md.typ).Kind() == reflect.Struct
+	return md.kind == reflect.Struct
 }
 
 // Fields returns structure fields. The slice must be considered as read-only.

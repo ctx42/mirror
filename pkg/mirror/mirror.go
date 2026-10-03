@@ -38,9 +38,7 @@ func Reflect(v any) *Metadata {
 
 // ReflectType extracts [Metadata] about the type. Panics if typ is nil.
 func ReflectType(typ reflect.Type) *Metadata {
-	if typ.Kind() == reflect.Ptr {
-		typ = typ.Elem()
-	}
+	typ = indirect(typ)
 
 	typCacheMX.RLock()
 	md, found := typCache[typ]
@@ -58,10 +56,7 @@ func ReflectType(typ reflect.Type) *Metadata {
 
 // ReflectValue extracts [Metadata] about the value.
 func ReflectValue(val reflect.Value) *Metadata {
-	typ := val.Type()
-	if typ.Kind() == reflect.Ptr {
-		typ = typ.Elem()
-	}
+	typ := indirect(val.Type())
 
 	typCacheMX.RLock()
 	md, found := typCache[typ]

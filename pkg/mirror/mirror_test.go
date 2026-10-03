@@ -62,6 +62,19 @@ func Test_Reflect(t *testing.T) {
 		assert.True(t, ok)
 		assert.Same(t, have, cached)
 	})
+
+	t.Run("pointer to pointer shares struct cache", func(t *testing.T) {
+		// --- Given ---
+		s := &struct{ F string }{}
+		p := &s
+
+		// --- When ---
+		have := Reflect(p)
+
+		// --- Then ---
+		assert.Same(t, Reflect(s), have)
+		assert.Equal(t, reflect.Struct, have.Kind())
+	})
 }
 
 func Test_ReflectValue(t *testing.T) {

@@ -80,6 +80,34 @@ func Test_NewMetadata(t *testing.T) {
 		assert.Equal(t, "", have.pkg)
 		assert.Equal(t, "int", have.name)
 	})
+
+	t.Run("pointer to pointer to struct", func(t *testing.T) {
+		// --- Given ---
+		inner := &struct{ F int }{}
+		p := &inner
+
+		// --- When ---
+		have := NewMetadata(p)
+
+		// --- Then ---
+		assert.Equal(t, reflect.Struct, have.Kind())
+		assert.Len(t, 1, have.Fields())
+		assert.Equal(t, "F", have.Fields()[0].Name())
+	})
+
+	t.Run("struct field pointer to pointer", func(t *testing.T) {
+		// --- Given ---
+		type inner struct{ N int }
+		s := struct{ F **inner }{}
+
+		// --- When ---
+		have := NewMetadata(s)
+
+		// --- Then ---
+		fld := have.FieldByName("F")
+		assert.True(t, fld.IsStruct())
+		assert.Equal(t, "N", fld.FieldByName("N").Name())
+	})
 }
 
 func Test_NewTypeMetadata(t *testing.T) {
@@ -294,6 +322,17 @@ func Test_Metadata_IsStruct(t *testing.T) {
 		// --- Given ---
 		var i int
 		md := NewMetadata(i)
+
+		// --- When ---
+		have := md.IsStruct()
+
+		// --- Then ---
+		assert.False(t, have)
+	})
+
+	t.Run("zero value", func(t *testing.T) {
+		// --- Given ---
+		var md Metadata
 
 		// --- When ---
 		have := md.IsStruct()

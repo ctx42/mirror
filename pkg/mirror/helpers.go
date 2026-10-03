@@ -160,10 +160,10 @@ func ParseTags(fieldName, stag string) ([]Tag, error) {
 	return tags, nil
 }
 
-// indirect returns the value that typ points to.
-// The original typ is returned if typ is not a pointer.
+// indirect follows every pointer and returns the type typ points to.
+// A non-pointer typ is returned as-is. A nil typ is returned as nil.
 func indirect(typ reflect.Type) reflect.Type {
-	if typ.Kind() == reflect.Ptr {
+	for typ != nil && typ.Kind() == reflect.Ptr {
 		typ = typ.Elem()
 	}
 	return typ

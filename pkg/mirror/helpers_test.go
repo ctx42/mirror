@@ -236,12 +236,16 @@ func Test_ParseTags_errors_tabular(t *testing.T) {
 }
 
 func Test_indirect(t *testing.T) {
+	buf := &bytes.Buffer{}
+	pp := &buf
+
 	tt := []struct {
 		testN string
 
 		v any
 	}{
 		{"pointer to struct", &bytes.Buffer{}},
+		{"pointer to pointer", pp},
 		{"slice", []string{"abc"}},
 		{"map", map[string]string{"key": "abc"}},
 		{"string", "abc"},
