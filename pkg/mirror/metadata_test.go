@@ -383,19 +383,19 @@ func Test_Metadata_Fields(t *testing.T) {
 		md := NewMetadata(TStruct{})
 
 		// --- When ---
-		fields := md.Fields()
+		have := md.Fields()
 
 		// --- Then ---
-		assert.Len(t, 9, fields)
-		assert.Equal(t, "FStr", fields[0].Name())
-		assert.Equal(t, "fStr", fields[1].Name())
-		assert.Equal(t, "FpStr", fields[2].Name())
-		assert.Equal(t, "FsStr", fields[3].Name())
-		assert.Equal(t, "FaStr", fields[4].Name())
-		assert.Equal(t, "FmStr", fields[5].Name())
-		assert.Equal(t, "SPtr", fields[6].Name())
-		assert.Equal(t, "SVal", fields[7].Name())
-		assert.Equal(t, "SNil", fields[8].Name())
+		assert.Len(t, 9, have)
+		assert.Equal(t, "FStr", have[0].Name())
+		assert.Equal(t, "fStr", have[1].Name())
+		assert.Equal(t, "FpStr", have[2].Name())
+		assert.Equal(t, "FsStr", have[3].Name())
+		assert.Equal(t, "FaStr", have[4].Name())
+		assert.Equal(t, "FmStr", have[5].Name())
+		assert.Equal(t, "SPtr", have[6].Name())
+		assert.Equal(t, "SVal", have[7].Name())
+		assert.Equal(t, "SNil", have[8].Name())
 	})
 
 	t.Run("struct without fields", func(t *testing.T) {
@@ -403,10 +403,10 @@ func Test_Metadata_Fields(t *testing.T) {
 		md := NewMetadata(struct{}{})
 
 		// --- When ---
-		fields := md.Fields()
+		have := md.Fields()
 
 		// --- Then ---
-		assert.Nil(t, fields)
+		assert.Nil(t, have)
 	})
 
 	t.Run("mutation does not change the metadata", func(t *testing.T) {
