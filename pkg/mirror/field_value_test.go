@@ -19,10 +19,10 @@ func Test_NewFieldValue(t *testing.T) {
 		val := reflectkit.GetValue(t, s, "F")
 
 		// --- When ---
-		fv := NewFieldValue(fld, val)
+		have := NewFieldValue(fld, val)
 
 		// --- Then ---
-		assert.Equal(t, "F", fv.Name())
+		assert.Equal(t, "F", have.Name())
 	})
 
 	t.Run("pointer field", func(t *testing.T) {
@@ -32,10 +32,10 @@ func Test_NewFieldValue(t *testing.T) {
 		val := reflectkit.GetValue(t, s, "F")
 
 		// --- When ---
-		fv := NewFieldValue(fld, val)
+		have := NewFieldValue(fld, val)
 
 		// --- Then ---
-		assert.Equal(t, "F", fv.Name())
+		assert.Equal(t, "F", have.Name())
 	})
 
 	t.Run("not exported field", func(t *testing.T) {
@@ -45,10 +45,10 @@ func Test_NewFieldValue(t *testing.T) {
 		val := reflectkit.GetValue(t, s, "f")
 
 		// --- When ---
-		fv := NewFieldValue(fld, val)
+		have := NewFieldValue(fld, val)
 
 		// --- Then ---
-		assert.Equal(t, "f", fv.Name())
+		assert.Equal(t, "f", have.Name())
 	})
 }
 
