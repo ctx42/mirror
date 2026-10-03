@@ -125,10 +125,12 @@ func Test_ReflectValue(t *testing.T) {
 
 	t.Run("uses cache", func(t *testing.T) {
 		// --- Given ---
-		dm := ReflectValue(reflect.ValueOf(check.After))
+		val := reflect.ValueOf(check.After)
+
+		dm := ReflectValue(val)
 
 		// --- When ---
-		have := ReflectValue(reflect.ValueOf(check.After))
+		have := ReflectValue(val)
 
 		// --- Then ---
 		assert.Same(t, dm, have)
