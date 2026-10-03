@@ -68,7 +68,7 @@ func Test_NewStructValue(t *testing.T) {
 	})
 }
 
-func Test_NewStructValue_IsPtr(t *testing.T) {
+func Test_StructValue_IsPtr(t *testing.T) {
 	t.Run("struct", func(t *testing.T) {
 		// --- Given ---
 		s := &struct{ F struct{ N int } }{}
@@ -132,7 +132,7 @@ func Test_StructValue_Metadata(t *testing.T) {
 	assert.Same(t, sv.metadata, have)
 }
 
-func Test_StructValue_NumFields(t *testing.T) {
+func Test_StructValue_NumField(t *testing.T) {
 	t.Run("pointer to struct", func(t *testing.T) {
 		// --- Given ---
 		s := &TStruct{}
