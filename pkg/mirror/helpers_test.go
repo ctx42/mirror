@@ -196,8 +196,12 @@ func Test_ParseTags(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.testN, func(t *testing.T) {
+			// --- Given ---
+			fieldName := tc.fieldName
+			fieldTag := tc.fieldTag
+
 			// --- When ---
-			have, err := ParseTags(tc.fieldName, tc.fieldTag)
+			have, err := ParseTags(fieldName, fieldTag)
 
 			// --- Then ---
 			assert.NoError(t, err)
@@ -225,8 +229,12 @@ func Test_ParseTags_errors_tabular(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.testN, func(t *testing.T) {
+			// --- Given ---
+			fieldName := "Field"
+			tags := tc.tags
+
 			// --- When ---
-			have, err := ParseTags("Field", tc.tags)
+			have, err := ParseTags(fieldName, tags)
 
 			// --- Then ---
 			assert.ErrorIs(t, ErrTagSyntax, err)
@@ -253,8 +261,11 @@ func Test_indirect(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.testN, func(t *testing.T) {
+			// --- Given ---
+			typ := reflect.TypeOf(tc.v)
+
 			// --- When ---
-			have := indirect(reflect.TypeOf(tc.v))
+			have := indirect(typ)
 
 			// --- Then ---
 			assert.NotEqual(t, reflect.Pointer, have.Kind())
@@ -279,8 +290,11 @@ func Test_splitOnLastPeriod_tabular(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.testN, func(t *testing.T) {
+			// --- Given ---
+			str := tc.str
+
 			// --- When ---
-			hImp, hName := splitOnLastPeriod(tc.str)
+			hImp, hName := splitOnLastPeriod(str)
 
 			// --- Then ---
 			assert.Equal(t, tc.wImp, hImp)
@@ -331,8 +345,11 @@ func Test_funcPkg_tabular(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.testN, func(t *testing.T) {
+			// --- Given ---
+			name := tc.name
+
 			// --- When ---
-			hPkg, hName := funcPkg(tc.name)
+			hPkg, hName := funcPkg(name)
 
 			// --- Then ---
 			assert.Equal(t, tc.wPkg, hPkg)
