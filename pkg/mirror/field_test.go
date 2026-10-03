@@ -197,6 +197,39 @@ func Test_Field_IsValid(t *testing.T) {
 	})
 }
 
+func Test_Field_IsExported(t *testing.T) {
+	s := struct {
+		FStr string
+		fStr string
+	}{}
+
+	typ := reflect.TypeOf(s)
+
+	t.Run("exported", func(t *testing.T) {
+		// --- Given ---
+		f := typ.Field(0)
+		sf := NewField(f)
+
+		// --- When ---
+		have := sf.IsExported()
+
+		// --- Then ---
+		assert.True(t, have)
+	})
+
+	t.Run("not-exported", func(t *testing.T) {
+		// --- Given ---
+		f := typ.Field(1)
+		sf := NewField(f)
+
+		// --- When ---
+		have := sf.IsExported()
+
+		// --- Then ---
+		assert.False(t, have)
+	})
+}
+
 func Test_Field_IsSliceOfPtr(t *testing.T) {
 	t.Run("slice of pointers", func(t *testing.T) {
 		// --- Given ---
@@ -506,39 +539,6 @@ func Test_Field_IsStruct(t *testing.T) {
 
 		// --- When ---
 		have := fld.IsStruct()
-
-		// --- Then ---
-		assert.False(t, have)
-	})
-}
-
-func Test_Field_IsExported(t *testing.T) {
-	s := struct {
-		FStr string
-		fStr string
-	}{}
-
-	typ := reflect.TypeOf(s)
-
-	t.Run("exported", func(t *testing.T) {
-		// --- Given ---
-		f := typ.Field(0)
-		sf := NewField(f)
-
-		// --- When ---
-		have := sf.IsExported()
-
-		// --- Then ---
-		assert.True(t, have)
-	})
-
-	t.Run("not-exported", func(t *testing.T) {
-		// --- Given ---
-		f := typ.Field(1)
-		sf := NewField(f)
-
-		// --- When ---
-		have := sf.IsExported()
 
 		// --- Then ---
 		assert.False(t, have)
