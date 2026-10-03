@@ -134,7 +134,7 @@ func Test_ReflectValue(t *testing.T) {
 		assert.Same(t, dm, have)
 	})
 
-	t.Run("func pointer", func(t *testing.T) {
+	t.Run("pointer to struct", func(t *testing.T) {
 		// --- Given ---
 		tst := &TwoStr{}
 		val := reflect.ValueOf(tst)

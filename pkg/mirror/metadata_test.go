@@ -343,7 +343,7 @@ func Test_Metadata_IsStruct(t *testing.T) {
 
 	t.Run("pointer to struct", func(t *testing.T) {
 		// --- Given ---
-		s := struct{ F int }{}
+		s := &struct{ F int }{}
 		md := NewMetadata(s)
 
 		// --- When ---

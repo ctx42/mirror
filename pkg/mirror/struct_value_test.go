@@ -71,14 +71,14 @@ func Test_NewStructValue(t *testing.T) {
 func Test_NewStructValue_IsPtr(t *testing.T) {
 	t.Run("struct", func(t *testing.T) {
 		// --- Given ---
-		s := &struct{ F int }{}
-		sv := NewStructValue(s)
+		s := &struct{ F struct{ N int } }{}
+		sv := NewStructValue(s).FieldByName("F").StructValue()
 
 		// --- When ---
 		have := sv.IsPtr()
 
 		// --- Then ---
-		assert.True(t, have)
+		assert.False(t, have)
 	})
 
 	t.Run("struct pointer", func(t *testing.T) {
@@ -161,11 +161,11 @@ func Test_StructValue_NumFields(t *testing.T) {
 func Test_StructValue_FieldByName(t *testing.T) {
 	t.Run("field of a struct", func(t *testing.T) {
 		// --- Given ---
-		s := &struct{ F int }{}
-		sv := NewStructValue(s)
+		s := &struct{ F struct{ N int } }{}
+		sv := NewStructValue(s).FieldByName("F").StructValue()
 
 		// --- When ---
-		have := sv.FieldByName("F")
+		have := sv.FieldByName("N")
 
 		// --- Then ---
 		assert.NotNil(t, have)
@@ -185,8 +185,8 @@ func Test_StructValue_FieldByName(t *testing.T) {
 
 	t.Run("not existing field", func(t *testing.T) {
 		// --- Given ---
-		s := &struct{ F int }{}
-		sv := NewStructValue(s)
+		s := &struct{ F struct{ N int } }{}
+		sv := NewStructValue(s).FieldByName("F").StructValue()
 
 		// --- When ---
 		have := sv.FieldByName("NotExisting")
@@ -237,10 +237,12 @@ func Test_StructValue_FieldByIndex(t *testing.T) {
 	t.Run("field of a struct", func(t *testing.T) {
 		// --- Given ---
 		s := &struct {
-			F0 int
-			F1 int
+			F struct {
+				F0 int
+				F1 int
+			}
 		}{}
-		sv := NewStructValue(s)
+		sv := NewStructValue(s).FieldByName("F").StructValue()
 
 		// --- When ---
 		have := sv.FieldByIndex(1)
@@ -269,10 +271,12 @@ func Test_StructValue_FieldByIndex(t *testing.T) {
 	t.Run("not existing field", func(t *testing.T) {
 		// --- Given ---
 		s := &struct {
-			F0 int
-			F1 int
+			F struct {
+				F0 int
+				F1 int
+			}
 		}{}
-		sv := NewStructValue(s)
+		sv := NewStructValue(s).FieldByName("F").StructValue()
 
 		// --- When ---
 		have := sv.FieldByIndex(42)
