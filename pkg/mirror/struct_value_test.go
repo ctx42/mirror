@@ -144,6 +144,18 @@ func Test_StructValue_NumFields(t *testing.T) {
 		// --- Then ---
 		assert.Equal(t, 9, have)
 	})
+
+	t.Run("not a struct", func(t *testing.T) {
+		// --- Given ---
+		s := &struct{ F int }{}
+		sv := NewStructValue(s).FieldByName("F").StructValue()
+
+		// --- When ---
+		have := sv.NumField()
+
+		// --- Then ---
+		assert.Equal(t, 0, have)
+	})
 }
 
 func Test_StructValue_FieldByName(t *testing.T) {
@@ -206,6 +218,18 @@ func Test_StructValue_FieldByName(t *testing.T) {
 		// --- Then ---
 		assert.NotNil(t, have)
 		assert.False(t, have.IsExported())
+	})
+
+	t.Run("nil pointer field", func(t *testing.T) {
+		// --- Given ---
+		s := &TStruct{}
+		sv := NewStructValue(s).FieldByName("SNil").StructValue()
+
+		// --- When ---
+		have := sv.FieldByName("FStr")
+
+		// --- Then ---
+		assert.Nil(t, have)
 	})
 }
 
@@ -295,6 +319,18 @@ func Test_StructValue_FieldByIndex(t *testing.T) {
 
 		// --- When ---
 		have := sv.FieldByIndex(-1)
+
+		// --- Then ---
+		assert.Nil(t, have)
+	})
+
+	t.Run("nil pointer field", func(t *testing.T) {
+		// --- Given ---
+		s := &TStruct{}
+		sv := NewStructValue(s).FieldByName("SNil").StructValue()
+
+		// --- When ---
+		have := sv.FieldByIndex(0)
 
 		// --- Then ---
 		assert.Nil(t, have)

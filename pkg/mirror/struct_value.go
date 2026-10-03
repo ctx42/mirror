@@ -53,17 +53,27 @@ func (sv *StructValue) IsValid() bool {
 func (sv *StructValue) Metadata() *Metadata { return sv.metadata }
 
 // NumField returns the number of fields in the structure.
-func (sv *StructValue) NumField() int { return sv.Type().NumField() }
+// A value that is not a struct has no fields.
+func (sv *StructValue) NumField() int {
+	if sv.metadata == nil || !sv.IsStruct() {
+		return 0
+	}
+	return sv.Type().NumField()
+}
 
 // FieldByName returns a struct field or nil if the field does not exist.
+// A nil struct pointer returns nil.
 func (sv *StructValue) FieldByName(name string) *FieldValue {
-	fld := sv.metadata.FieldByName(name)
-	if fld == nil {
+	if sv.metadata == nil {
 		return nil
 	}
-	val := sv.value
-	if sv.IsPtr() {
-		val = val.Elem()
+	fld := sv.metadata.FieldByName(name)
+	if fld == nil || len(fld.index) == 0 {
+		return nil
+	}
+	val := sv.deref()
+	if !val.IsValid() {
+		return nil
 	}
 	if val = val.Field(fld.index[0]); val.IsValid() {
 		return NewFieldValue(fld, val)
@@ -72,17 +82,39 @@ func (sv *StructValue) FieldByName(name string) *FieldValue {
 }
 
 // FieldByIndex returns a struct field or nil if the field does not exist.
+// A nil struct pointer returns nil.
 func (sv *StructValue) FieldByIndex(idx int) *FieldValue {
-	val := sv.value
-	if sv.kind == reflect.Ptr {
-		val = val.Elem()
+	if sv.metadata == nil {
+		return nil
 	}
-	if fld := sv.metadata.FieldByIndex(idx); fld != nil {
-		if val = val.Field(idx); val.IsValid() {
-			return NewFieldValue(fld, val)
-		}
+	fld := sv.metadata.FieldByIndex(idx)
+	if fld == nil {
+		return nil
+	}
+	val := sv.deref()
+	if !val.IsValid() {
+		return nil
+	}
+	if val = val.Field(idx); val.IsValid() {
+		return NewFieldValue(fld, val)
 	}
 	return nil
+}
+
+// deref returns the struct sv holds.
+// A nil pointer or a non-struct produces the zero Value.
+func (sv *StructValue) deref() reflect.Value {
+	val := sv.value
+	if sv.IsPtr() {
+		if !val.IsValid() || val.IsNil() {
+			return reflect.Value{}
+		}
+		val = val.Elem()
+	}
+	if !val.IsValid() || val.Kind() != reflect.Struct {
+		return reflect.Value{}
+	}
+	return val
 }
 
 // NewIfNil initializes the field value with its zero value if it is nil.
