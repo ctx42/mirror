@@ -44,7 +44,7 @@ func (fv *FieldValue) NewIfNil() *FieldValue {
 		return fv
 	}
 	switch fv.kind {
-	case reflect.Ptr:
+	case reflect.Pointer:
 		if v.IsNil() {
 			v.Set(reflect.New(fv.Type().Elem()))
 		}

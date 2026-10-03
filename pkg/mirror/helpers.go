@@ -159,7 +159,7 @@ func ParseTags(fieldName, stag string) ([]Tag, error) {
 // indirect follows every pointer and returns the type typ points to.
 // A non-pointer typ is returned as-is. A nil typ is returned as nil.
 func indirect(typ reflect.Type) reflect.Type {
-	for typ != nil && typ.Kind() == reflect.Ptr {
+	for typ != nil && typ.Kind() == reflect.Pointer {
 		typ = typ.Elem()
 	}
 	return typ

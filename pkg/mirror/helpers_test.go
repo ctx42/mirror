@@ -257,7 +257,7 @@ func Test_indirect(t *testing.T) {
 			have := indirect(reflect.TypeOf(tc.v))
 
 			// --- Then ---
-			assert.NotEqual(t, reflect.Ptr, have.Kind())
+			assert.NotEqual(t, reflect.Pointer, have.Kind())
 		})
 	}
 }

@@ -35,7 +35,7 @@ func NewField(sf reflect.StructField) *Field {
 		index:      sf.Index,
 	}
 	fld.tags, _ = ParseTags(fld.sf.Name, string(fld.sf.Tag))
-	if fld.sliceOrArr && sf.Type.Elem().Kind() == reflect.Ptr {
+	if fld.sliceOrArr && sf.Type.Elem().Kind() == reflect.Pointer {
 		fld.sliceOfPtr = true
 	}
 	return fld
@@ -82,7 +82,7 @@ func (fld *Field) IsSliceOfPtr() bool { return fld.sliceOfPtr }
 // IndirectType if the field type is a pointer type it returns underlying type,
 // otherwise it returns the type set in the constructor function.
 func (fld *Field) IndirectType() reflect.Type {
-	if fld.kind == reflect.Ptr {
+	if fld.kind == reflect.Pointer {
 		return fld.typ.Elem()
 	}
 	return fld.typ

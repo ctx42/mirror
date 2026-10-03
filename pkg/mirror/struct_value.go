@@ -26,7 +26,7 @@ func NewStructValue(s any) *StructValue {
 		kind:  value.Kind(),
 	}
 
-	if sv.kind != reflect.Ptr {
+	if sv.kind != reflect.Pointer {
 		return nil
 	}
 
@@ -39,7 +39,7 @@ func NewStructValue(s any) *StructValue {
 }
 
 // IsPtr returns true if the struct value is a pointer type.
-func (sv *StructValue) IsPtr() bool { return sv.kind == reflect.Ptr }
+func (sv *StructValue) IsPtr() bool { return sv.kind == reflect.Pointer }
 
 // IsValid returns true when the value field is valid.
 func (sv *StructValue) IsValid() bool {

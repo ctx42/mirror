@@ -438,7 +438,8 @@ func Test_Metadata_FieldByName(t *testing.T) {
 
 	t.Run("known unexported field", func(t *testing.T) {
 		// --- Given ---
-		md := NewMetadata(TStruct{})
+		s := TStruct{fStr: "hidden"}
+		md := NewMetadata(s)
 
 		// --- When ---
 		have := md.FieldByName("fStr")

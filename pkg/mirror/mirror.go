@@ -85,7 +85,7 @@ func cachedType(typ reflect.Type, build func() *Metadata) *Metadata {
 // funcValue returns val when it is a function, following pointers.
 // The boolean is false for a nil pointer or any other kind.
 func funcValue(val reflect.Value) (reflect.Value, bool) {
-	for val.IsValid() && val.Kind() == reflect.Ptr {
+	for val.IsValid() && val.Kind() == reflect.Pointer {
 		if val.IsNil() {
 			return reflect.Value{}, false
 		}
