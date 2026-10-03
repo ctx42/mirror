@@ -61,10 +61,10 @@ func Test_NewStructValue(t *testing.T) {
 
 	t.Run("nil", func(t *testing.T) {
 		// --- When ---
-		sv := NewStructValue(nil)
+		have := NewStructValue(nil)
 
 		// --- Then ---
-		assert.Nil(t, sv)
+		assert.Nil(t, have)
 	})
 }
 
