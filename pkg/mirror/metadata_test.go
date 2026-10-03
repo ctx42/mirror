@@ -443,4 +443,15 @@ func Test_Metadata_FieldByIndex(t *testing.T) {
 		// --- Then ---
 		assert.Nil(t, have)
 	})
+
+	t.Run("negative index", func(t *testing.T) {
+		// --- Given ---
+		md := NewMetadata(TStruct{})
+
+		// --- When ---
+		have := md.FieldByIndex(-1)
+
+		// --- Then ---
+		assert.Nil(t, have)
+	})
 }

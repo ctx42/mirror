@@ -287,6 +287,18 @@ func Test_StructValue_FieldByIndex(t *testing.T) {
 		assert.NotNil(t, have)
 		assert.Equal(t, "f", have.Name())
 	})
+
+	t.Run("negative index", func(t *testing.T) {
+		// --- Given ---
+		s := &TStruct{}
+		sv := NewStructValue(s)
+
+		// --- When ---
+		have := sv.FieldByIndex(-1)
+
+		// --- Then ---
+		assert.Nil(t, have)
+	})
 }
 
 func Test_StructValue_NewIfNil(t *testing.T) {

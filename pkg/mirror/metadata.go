@@ -88,7 +88,7 @@ func (md *Metadata) FieldByName(name string) *Field {
 // FieldByIndex returns the field at the specified index in the struct. If the
 // index is out of range, it returns nil.
 func (md *Metadata) FieldByIndex(idx int) *Field {
-	if idx >= len(md.fields) {
+	if idx < 0 || idx >= len(md.fields) {
 		return nil
 	}
 	return md.fields[idx]
