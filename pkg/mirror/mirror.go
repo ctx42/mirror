@@ -42,19 +42,9 @@ func Reflect(v any) *Metadata {
 // ReflectType extracts [Metadata] about the type. Panics if typ is nil.
 func ReflectType(typ reflect.Type) *Metadata {
 	typ = indirect(typ)
-
-	typCacheMX.RLock()
-	md, found := typCache[typ]
-	typCacheMX.RUnlock()
-	if found {
-		return md
-	}
-
-	md = NewTypeMetadata(typ)
-	typCacheMX.Lock()
-	typCache[typ] = md
-	typCacheMX.Unlock()
-	return md
+	return cachedType(typ, func() *Metadata {
+		return NewTypeMetadata(typ)
+	})
 }
 
 // ReflectValue extracts [Metadata] about the value.
@@ -65,7 +55,14 @@ func ReflectValue(val reflect.Value) *Metadata {
 	}
 
 	typ := indirect(val.Type())
+	return cachedType(typ, func() *Metadata {
+		return NewValueMetadata(val)
+	})
+}
 
+// cachedType returns the metadata cached for typ, building it once.
+// Concurrent callers for one type share the stored pointer.
+func cachedType(typ reflect.Type, build func() *Metadata) *Metadata {
 	typCacheMX.RLock()
 	md, found := typCache[typ]
 	typCacheMX.RUnlock()
@@ -73,8 +70,12 @@ func ReflectValue(val reflect.Value) *Metadata {
 		return md
 	}
 
-	md = NewValueMetadata(val)
+	md = build()
 	typCacheMX.Lock()
+	if existing, ok := typCache[typ]; ok {
+		typCacheMX.Unlock()
+		return existing
+	}
 	typCache[typ] = md
 	typCacheMX.Unlock()
 	return md

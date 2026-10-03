@@ -5,6 +5,7 @@ package mirror
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/ctx42/testing/pkg/assert"
@@ -75,6 +76,36 @@ func Test_Reflect(t *testing.T) {
 		assert.Same(t, Reflect(s), have)
 		assert.Equal(t, reflect.Struct, have.Kind())
 	})
+}
+
+func Test_Reflect_concurrent_first_load(t *testing.T) {
+	// --- Given ---
+	type concurrentFirst struct {
+		A0, A1, A2, A3, A4, A5, A6, A7, A8, A9 int
+		B0, B1, B2, B3, B4, B5, B6, B7, B8, B9 string
+	}
+
+	const n = 32
+	mds := make([]*Metadata, n)
+	start := make(chan struct{})
+	var wg sync.WaitGroup
+	wg.Add(n)
+	for i := range n {
+		go func() {
+			defer wg.Done()
+			<-start
+			mds[i] = Reflect(&concurrentFirst{})
+		}()
+	}
+
+	// --- When ---
+	close(start)
+	wg.Wait()
+
+	// --- Then ---
+	for i := 1; i < n; i++ {
+		assert.Same(t, mds[0], mds[i])
+	}
 }
 
 func Test_ReflectValue(t *testing.T) {
