@@ -160,3 +160,15 @@ func ExampleParseTags() {
 	// name: name
 	// omitempty: true
 }
+
+func ExampleFieldValue_NewIfNil() {
+	s := &struct{ F *int }{}
+	fv := mirror.NewStructValue(s).FieldByName("F")
+	fv.NewIfNil()
+
+	fmt.Printf("nil: %t\n", s.F == nil)
+	fmt.Printf("zero: %d\n", *s.F)
+	// Output:
+	// nil: false
+	// zero: 0
+}
