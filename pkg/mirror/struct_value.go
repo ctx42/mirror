@@ -38,7 +38,6 @@ func NewStructValue(s any) *StructValue {
 	return sv
 }
 
-// IsPtr returns true if the struct value is a pointer type.
 func (sv *StructValue) IsPtr() bool { return sv.kind == reflect.Pointer }
 
 // IsValid returns true when the value field is valid.
@@ -49,7 +48,6 @@ func (sv *StructValue) IsValid() bool {
 	return sv.value.IsValid()
 }
 
-// Metadata returns metadata for the struct type.
 func (sv *StructValue) Metadata() *Metadata { return sv.metadata }
 
 // NumField returns the number of fields in the structure.
