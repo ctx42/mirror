@@ -300,7 +300,7 @@ func Test_Field_IndirectType(t *testing.T) {
 		have := fld.IndirectType()
 
 		// --- Then ---
-		assert.Equal(t, have, reflect.TypeOf(""))
+		assert.Equal(t, reflect.TypeOf(""), have)
 	})
 
 	t.Run("not pointer type", func(t *testing.T) {
@@ -313,7 +313,7 @@ func Test_Field_IndirectType(t *testing.T) {
 		have := fld.IndirectType()
 
 		// --- Then ---
-		assert.Equal(t, have, reflect.TypeOf(""))
+		assert.Equal(t, reflect.TypeOf(""), have)
 	})
 }
 
