@@ -172,3 +172,15 @@ func ExampleFieldValue_NewIfNil() {
 	// nil: false
 	// zero: 0
 }
+
+func ExampleStructValue_NewIfNil() {
+	s := &struct{ F *int }{}
+	sv := mirror.NewStructValue(s).FieldByName("F").StructValue()
+	sv.NewIfNil()
+
+	fmt.Printf("nil: %t\n", s.F == nil)
+	fmt.Printf("zero: %d\n", *s.F)
+	// Output:
+	// nil: false
+	// zero: 0
+}
