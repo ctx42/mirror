@@ -65,6 +65,7 @@ func Test_FieldValue_StructValue(t *testing.T) {
 
 		// --- Then ---
 		assert.True(t, have.IsValid())
+
 		have.FieldByName("FStr").Value().SetString("b")
 		assert.Equal(t, "b", s.F.FStr)
 	})
@@ -81,6 +82,7 @@ func Test_FieldValue_StructValue(t *testing.T) {
 
 		// --- Then ---
 		assert.True(t, have.IsValid())
+
 		have.NewIfNil().FieldByName("FStr").Value().SetString("b")
 		assert.Equal(t, "b", s.F.FStr)
 	})

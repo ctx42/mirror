@@ -352,9 +352,10 @@ func Test_StructValue_NewIfNil(t *testing.T) {
 
 		// --- Then ---
 		assert.NotNil(t, sv)
+		assert.Same(t, sv, have)
+
 		sv.FieldByName("FStr").Value().SetString("abc")
 		assert.Equal(t, "abc", s.FStr)
-		assert.Same(t, sv, have)
 	})
 
 	t.Run("struct field which is struct pointer", func(t *testing.T) {
