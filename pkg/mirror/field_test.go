@@ -523,23 +523,25 @@ func Test_Field_IsExported(t *testing.T) {
 	t.Run("exported", func(t *testing.T) {
 		// --- Given ---
 		f := typ.Field(0)
-
-		// --- When ---
 		sf := NewField(f)
 
+		// --- When ---
+		have := sf.IsExported()
+
 		// --- Then ---
-		assert.True(t, sf.exported)
+		assert.True(t, have)
 	})
 
 	t.Run("not-exported", func(t *testing.T) {
 		// --- Given ---
 		f := typ.Field(1)
-
-		// --- When ---
 		sf := NewField(f)
 
+		// --- When ---
+		have := sf.IsExported()
+
 		// --- Then ---
-		assert.False(t, sf.exported)
+		assert.False(t, have)
 	})
 }
 

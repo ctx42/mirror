@@ -15,7 +15,6 @@ type Field struct {
 	typ        reflect.Type        // Field type.
 	kind       reflect.Kind        // Field type kind.
 	anonymous  bool                // Is an embedded field?
-	exported   bool                // Is a field exported?
 	sliceOfPtr bool                // Is a slice of pointers?
 	sliceOrArr bool                // Is slice or array?
 
@@ -32,7 +31,6 @@ func NewField(sf reflect.StructField) *Field {
 		typ:        sf.Type,
 		kind:       kind,
 		anonymous:  sf.Anonymous,
-		exported:   sf.IsExported(),
 		sliceOrArr: kind == reflect.Slice || kind == reflect.Array,
 		index:      sf.Index,
 	}
