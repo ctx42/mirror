@@ -36,8 +36,9 @@ func (fv *FieldValue) Field() *Field { return fv.field }
 // Value returns the [reflect.Value] associated with the [FieldValue].
 func (fv *FieldValue) Value() reflect.Value { return fv.value }
 
-// NewIfNil initializes the value of a field if it is nil with its zero value.
-// An unsettable field is left unchanged.
+// NewIfNil allocates a nil pointer, map, or slice.
+// An unsettable field is left unchanged. A pointer becomes a pointer to
+// the zero element. A map or slice becomes empty. Other kinds stay nil.
 func (fv *FieldValue) NewIfNil() *FieldValue {
 	v := fv.value
 	if !v.IsValid() || !v.CanSet() {
@@ -64,7 +65,7 @@ func (fv *FieldValue) NewIfNil() *FieldValue {
 		}
 
 	default:
-		// Not a pointer.
+		// Not a pointer, map, or slice.
 	}
 	return fv
 }
