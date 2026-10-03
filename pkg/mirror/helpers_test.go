@@ -335,13 +335,13 @@ func Test_funcPkg_tabular(t *testing.T) {
 			"After",
 		},
 		{
-			"anonymous function",
+			"anonymous func",
 			"github.com/ctx42/mirror/pkg/mirror.Test_NewValueMetadata.func5",
 			"github.com/ctx42/mirror/pkg/mirror",
 			"func5",
 		},
 		{
-			"anonymous function",
+			"anonymous func index",
 			"github.com/ctx42/mirror/pkg/mirror.Test_NewValueMetadata.func6.2",
 			"github.com/ctx42/mirror/pkg/mirror",
 			"func6.2",
