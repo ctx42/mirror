@@ -84,7 +84,7 @@ func Test_Field_Index(t *testing.T) {
 		assert.Equal(t, []int{1}, have)
 	})
 
-	t.Run("mutation does not change the field", func(t *testing.T) {
+	t.Run("mutated copy", func(t *testing.T) {
 		// --- Given ---
 		s := &struct {
 			F0 string
