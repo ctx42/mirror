@@ -161,7 +161,7 @@ func Test_Tag_IsZero(t *testing.T) {
 		assert.True(t, have)
 	})
 
-	t.Run("the key is not empty ", func(t *testing.T) {
+	t.Run("key set", func(t *testing.T) {
 		// --- Given ---
 		tag := Tag{key: "abc"}
 
@@ -172,7 +172,7 @@ func Test_Tag_IsZero(t *testing.T) {
 		assert.False(t, have)
 	})
 
-	t.Run("the name is not empty ", func(t *testing.T) {
+	t.Run("name set", func(t *testing.T) {
 		// --- Given ---
 		tag := Tag{name: "abc"}
 
@@ -183,7 +183,7 @@ func Test_Tag_IsZero(t *testing.T) {
 		assert.False(t, have)
 	})
 
-	t.Run("the field is not empty ", func(t *testing.T) {
+	t.Run("field set", func(t *testing.T) {
 		// --- Given ---
 		tag := Tag{field: "abc"}
 
@@ -194,7 +194,7 @@ func Test_Tag_IsZero(t *testing.T) {
 		assert.True(t, have)
 	})
 
-	t.Run("the options are not empty ", func(t *testing.T) {
+	t.Run("options set", func(t *testing.T) {
 		// --- Given ---
 		tag := Tag{options: []string{"abc"}}
 
