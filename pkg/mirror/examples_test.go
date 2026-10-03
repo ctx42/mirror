@@ -145,3 +145,18 @@ func ExampleReflectType() {
 	// kind: struct
 	// fields: 1
 }
+
+func ExampleParseTags() {
+	tags, err := mirror.ParseTags("F", `json:"name,omitempty"`)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("key: %s\n", tags[0].Key())
+	fmt.Printf("name: %s\n", tags[0].Name())
+	fmt.Printf("omitempty: %t\n", tags[0].Contains("omitempty"))
+	// Output:
+	// key: json
+	// name: name
+	// omitempty: true
+}
