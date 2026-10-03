@@ -14,10 +14,8 @@ import (
 
 // Sentinel errors.
 var (
-	// ErrInvField represents invalid fields error. Field is invalid if:
-	//   - the field does not exist,
-	//   - the field type is nil,
-	//   - reflect.Value.IsValid returns false.
+	// ErrInvField is returned by [FieldValue.Get] for an interface field or
+	// an embedded field. A missing field name returns nil, not this error.
 	ErrInvField = errors.New("invalid field")
 
 	// ErrUnexportedField represents an error when accessing an unexported
