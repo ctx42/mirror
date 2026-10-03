@@ -4,6 +4,7 @@
 package mirror
 
 import (
+	"reflect"
 	"testing"
 	"time"
 
@@ -398,6 +399,48 @@ func Test_StructValue_NewIfNil(t *testing.T) {
 		assert.NotNil(t, sv)
 		assert.NotNil(t, s.F)
 		assert.Zero(t, s.F)
+		assert.Same(t, sv, have)
+	})
+
+	t.Run("pointer to pointer", func(t *testing.T) {
+		// --- Given ---
+		s := &struct{ F **int }{}
+		sv := NewStructValue(s).FieldByName("F").StructValue()
+
+		// --- When ---
+		have := sv.NewIfNil()
+
+		// --- Then ---
+		assert.Same(t, sv, have)
+
+		assert.NotNil(t, s.F)
+		assert.Nil(t, *s.F)
+	})
+
+	t.Run("unexported pointer", func(t *testing.T) {
+		// --- Given ---
+		s := &struct{ f *int }{}
+		sv := NewStructValue(s).FieldByName("f").StructValue()
+
+		// --- When ---
+		have := sv.NewIfNil()
+
+		// --- Then ---
+		assert.Same(t, sv, have)
+
+		assert.Nil(t, s.f)
+	})
+
+	t.Run("invalid value", func(t *testing.T) {
+		// --- Given ---
+		s := &struct{ F *int }{}
+		fld := NewField(reflect.TypeOf(s).Elem().Field(0))
+		sv := NewFieldValue(fld, reflect.Value{}).StructValue()
+
+		// --- When ---
+		have := sv.NewIfNil()
+
+		// --- Then ---
 		assert.Same(t, sv, have)
 	})
 }

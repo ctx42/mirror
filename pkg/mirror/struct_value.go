@@ -117,11 +117,13 @@ func (sv *StructValue) deref() reflect.Value {
 	return val
 }
 
-// NewIfNil initializes the field value with its zero value if it is nil.
+// NewIfNil initializes a nil pointer with a new pointer to the zero value.
+// An unsettable field is left unchanged.
 func (sv *StructValue) NewIfNil() *StructValue {
 	val := sv.value
-	if sv.IsPtr() && val.IsNil() {
-		val.Set(reflect.New(sv.Type()))
+	if !sv.IsPtr() || !val.IsValid() || !val.CanSet() || !val.IsNil() {
+		return sv
 	}
+	val.Set(reflect.New(val.Type().Elem()))
 	return sv
 }
