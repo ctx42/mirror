@@ -8,7 +8,7 @@ import (
 	"slices"
 )
 
-// Field represents struct field.
+// Field represents a struct field.
 type Field struct {
 	*metadata
 	sf         reflect.StructField // Corresponding struct field.
@@ -85,8 +85,8 @@ func (fld *Field) IsExported() bool { return fld.sf.IsExported() }
 // otherwise false.
 func (fld *Field) IsSliceOfPtr() bool { return fld.sliceOfPtr }
 
-// IndirectType if the field type is a pointer type it returns underlying type,
-// otherwise it returns the type set in the constructor function.
+// IndirectType returns the pointed-to type when the field is a pointer.
+// Otherwise it returns the type set in the constructor.
 func (fld *Field) IndirectType() reflect.Type {
 	if fld.kind == reflect.Pointer {
 		return fld.typ.Elem()
@@ -110,7 +110,7 @@ func (fld *Field) IsMap() bool { return fld.kind == reflect.Map }
 // IsInterface returns true if the field is an interface, false otherwise.
 func (fld *Field) IsInterface() bool { return fld.kind == reflect.Interface }
 
-// TypeMetadata return [Metadata] for the type.
+// TypeMetadata returns [Metadata] for the field type.
 func (fld *Field) TypeMetadata() *Metadata { return fld.metadata }
 
 // IsAnonymous returns true for embedded fields, false otherwise.
