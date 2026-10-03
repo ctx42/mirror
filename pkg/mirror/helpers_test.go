@@ -250,13 +250,18 @@ func Test_indirect(t *testing.T) {
 	tt := []struct {
 		testN string
 
-		v any
+		v    any
+		want reflect.Type
 	}{
-		{"pointer to struct", &bytes.Buffer{}},
-		{"pointer to pointer", pp},
-		{"slice", []string{"abc"}},
-		{"map", map[string]string{"key": "abc"}},
-		{"string", "abc"},
+		{"pointer to struct", &bytes.Buffer{}, reflect.TypeOf(bytes.Buffer{})},
+		{"pointer to pointer", pp, reflect.TypeOf(bytes.Buffer{})},
+		{"slice", []string{"abc"}, reflect.TypeOf([]string{})},
+		{
+			"map",
+			map[string]string{"key": "abc"},
+			reflect.TypeOf(map[string]string{}),
+		},
+		{"string", "abc", reflect.TypeOf("")},
 	}
 
 	for _, tc := range tt {
@@ -268,7 +273,7 @@ func Test_indirect(t *testing.T) {
 			have := indirect(typ)
 
 			// --- Then ---
-			assert.NotEqual(t, reflect.Pointer, have.Kind())
+			assert.Equal(t, tc.want, have)
 		})
 	}
 }
