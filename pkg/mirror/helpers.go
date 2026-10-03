@@ -170,7 +170,7 @@ func indirect(typ reflect.Type) reflect.Type {
 func splitOnLastPeriod(s string) (before, after string) {
 	i := strings.LastIndex(s, ".")
 	if i == -1 {
-		return s, "" // no dot
+		return s, "" // No dot.
 	}
 	return s[:i], s[i+1:]
 }
