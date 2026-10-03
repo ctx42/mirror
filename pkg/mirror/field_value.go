@@ -37,8 +37,12 @@ func (fv *FieldValue) Field() *Field { return fv.field }
 func (fv *FieldValue) Value() reflect.Value { return fv.value }
 
 // NewIfNil initializes the value of a field if it is nil with its zero value.
+// An unsettable field is left unchanged.
 func (fv *FieldValue) NewIfNil() *FieldValue {
 	v := fv.value
+	if !v.IsValid() || !v.CanSet() {
+		return fv
+	}
 	switch fv.kind {
 	case reflect.Ptr:
 		if v.IsNil() {

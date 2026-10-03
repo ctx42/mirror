@@ -218,6 +218,20 @@ func Test_FieldValue_NewIfNil(t *testing.T) {
 		// --- Then ---
 		assert.Same(t, fv, have)
 	})
+
+	t.Run("unexported pointer", func(t *testing.T) {
+		// --- Given ---
+		s := &struct{ f *int }{}
+		fv := NewStructValue(s).FieldByName("f")
+
+		// --- When ---
+		have := fv.NewIfNil()
+
+		// --- Then ---
+		assert.Same(t, fv, have)
+
+		assert.Nil(t, s.f)
+	})
 }
 
 func Test_FieldValue_Get(t *testing.T) {
