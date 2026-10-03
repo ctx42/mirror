@@ -52,34 +52,6 @@ func Test_NewFieldValue(t *testing.T) {
 	})
 }
 
-func Test_FieldValue_Field(t *testing.T) {
-	// --- Given ---
-	s := &struct{ F string }{}
-	fld := NewField(reflectkit.GetField(t, s, "F"))
-	val := reflectkit.GetValue(t, s, "F")
-	fv := NewFieldValue(fld, val)
-
-	// --- When ---
-	have := fv.Field()
-
-	// --- Then ---
-	assert.Same(t, fld, have)
-}
-
-func Test_FieldValue_Value(t *testing.T) {
-	// --- Given ---
-	s := &struct{ F string }{}
-	fld := NewField(reflectkit.GetField(t, s, "F"))
-	val := reflectkit.GetValue(t, s, "F")
-	fv := NewFieldValue(fld, val)
-
-	// --- When ---
-	have := fv.Value()
-
-	// --- Then ---
-	assert.Equal(t, val, have)
-}
-
 func Test_FieldValue_StructValue(t *testing.T) {
 	t.Run("field", func(t *testing.T) {
 		// --- Given ---
@@ -112,6 +84,34 @@ func Test_FieldValue_StructValue(t *testing.T) {
 		have.NewIfNil().FieldByName("FStr").Value().SetString("b")
 		assert.Equal(t, "b", s.F.FStr)
 	})
+}
+
+func Test_FieldValue_Field(t *testing.T) {
+	// --- Given ---
+	s := &struct{ F string }{}
+	fld := NewField(reflectkit.GetField(t, s, "F"))
+	val := reflectkit.GetValue(t, s, "F")
+	fv := NewFieldValue(fld, val)
+
+	// --- When ---
+	have := fv.Field()
+
+	// --- Then ---
+	assert.Same(t, fld, have)
+}
+
+func Test_FieldValue_Value(t *testing.T) {
+	// --- Given ---
+	s := &struct{ F string }{}
+	fld := NewField(reflectkit.GetField(t, s, "F"))
+	val := reflectkit.GetValue(t, s, "F")
+	fv := NewFieldValue(fld, val)
+
+	// --- When ---
+	have := fv.Value()
+
+	// --- Then ---
+	assert.Equal(t, val, have)
 }
 
 func Test_FieldValue_NewIfNil(t *testing.T) {
