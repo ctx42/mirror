@@ -25,6 +25,7 @@ type Field struct {
 // NewField returns a new instance of the struct field.
 func NewField(sf reflect.StructField) *Field {
 	kind := sf.Type.Kind()
+	sf.Index = slices.Clone(sf.Index)
 	fld := &Field{
 		metadata:   NewTypeMetadata(sf.Type),
 		sf:         sf,
@@ -42,7 +43,12 @@ func NewField(sf reflect.StructField) *Field {
 }
 
 // StructField returns the underlying [reflect.StructField] for the field.
-func (fld *Field) StructField() reflect.StructField { return fld.sf }
+// The index sequence is a copy.
+func (fld *Field) StructField() reflect.StructField {
+	sf := fld.sf
+	sf.Index = slices.Clone(fld.index)
+	return sf
+}
 
 // Type returns [reflect.StructField.Type] for the field.
 func (fld *Field) Type() reflect.Type { return fld.typ }
