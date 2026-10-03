@@ -254,7 +254,8 @@ func Test_FieldValue_Get(t *testing.T) {
 
 	t.Run("pointer field", func(t *testing.T) {
 		// --- Given ---
-		s := &struct{ F *string }{F: ptr("abc")}
+		abc := "abc"
+		s := &struct{ F *string }{F: &abc}
 		fld := NewField(reflectkit.GetField(t, s, "F"))
 		val := reflectkit.GetValue(t, s, "F")
 		fv := NewFieldValue(fld, val)
