@@ -19,10 +19,8 @@ type Tag struct {
 	options []string // Tag options.
 }
 
-// Key returns the key of the tag.
 func (tag Tag) Key() string { return tag.key }
 
-// Name returns the name of the tag.
 func (tag Tag) Name() string { return tag.name }
 
 // Contains returns true if the option exists on the list.
