@@ -20,11 +20,11 @@ func Test_NewField(t *testing.T) {
 		sf := reflectkit.GetField(t, s, "F")
 
 		// --- When ---
-		fld := NewField(sf)
+		have := NewField(sf)
 
 		// --- Then ---
-		assert.Equal(t, sf, fld.sf)
-		assert.Nil(t, fld.tags)
+		assert.Equal(t, sf, have.sf)
+		assert.Nil(t, have.tags)
 	})
 }
 
