@@ -134,3 +134,14 @@ func ExampleFieldValue_Get() {
 	// Output:
 	// F1 value: 42
 }
+
+func ExampleReflectType() {
+	typ := reflect.TypeOf(&struct{ F int }{})
+	md := mirror.ReflectType(typ)
+
+	fmt.Printf("kind: %s\n", md.Kind())
+	fmt.Printf("fields: %d\n", len(md.Fields()))
+	// Output:
+	// kind: struct
+	// fields: 1
+}
