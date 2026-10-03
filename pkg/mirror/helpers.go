@@ -4,15 +4,11 @@
 package mirror
 
 import (
-	"errors"
 	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
 )
-
-// ErrTagSyntax represents the error when parsing a struct field tag.
-var ErrTagSyntax = errors.New("struct field tag syntax error")
 
 // Ptr returns a pointer to any type.
 func Ptr[T any](v T) *T { return &v }

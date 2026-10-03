@@ -21,6 +21,9 @@ var (
 	// ErrUnexportedField represents an error when accessing an unexported
 	// field.
 	ErrUnexportedField = errors.New("unexported field")
+
+	// ErrTagSyntax represents the error when parsing a struct field tag.
+	ErrTagSyntax = errors.New("struct field tag syntax error")
 )
 
 var (
