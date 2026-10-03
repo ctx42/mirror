@@ -6,9 +6,8 @@ package mirror_test
 import (
 	"fmt"
 	"reflect"
+	"strings"
 	"time"
-
-	"github.com/ctx42/testing/pkg/check"
 
 	"github.com/ctx42/mirror/pkg/mirror"
 )
@@ -38,7 +37,7 @@ func ExampleReflect() {
 }
 
 func ExampleReflectValue() {
-	val := reflect.ValueOf(check.After)
+	val := reflect.ValueOf(strings.TrimSpace)
 	md := mirror.ReflectValue(val)
 
 	fmt.Printf("type   : %s\n", md.Type().String())
@@ -46,10 +45,10 @@ func ExampleReflectValue() {
 	fmt.Printf("name   : %s\n", md.Name())
 	fmt.Printf("package: %s\n", md.Package())
 	// Output:
-	// type   : func(interface {}, interface {}, ...interface {}) error
+	// type   : func(string) string
 	// kind   : func
-	// name   : After
-	// package: github.com/ctx42/testing/pkg/check
+	// name   : TrimSpace
+	// package: strings
 }
 
 func ExampleReflect_field() {

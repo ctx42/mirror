@@ -1,67 +1,74 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/ctx42/mirror)](https://goreportcard.com/report/github.com/ctx42/mirror)
-[![GoDoc](https://img.shields.io/badge/api-Godoc-blue.svg)](https://pkg.go.dev/github.com/ctx42/mirror)
-![Tests](https://github.com/ctx42/mirror/actions/workflows/go.yml/badge.svg?branch=master)
+[![Tests](https://github.com/ctx42/mirror/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/ctx42/mirror/actions/workflows/go.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/ctx42/mirror.svg)](https://pkg.go.dev/github.com/ctx42/mirror)
+[![Go Version](https://img.shields.io/badge/go-1.26-00ADD8)](go.mod)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE.md)
+
+# Mirror
+
+Cached struct reflection for Go programs that read and write struct fields.
+
+It parses a struct once and keeps the metadata, so later reads of the same
+type skip that work.
 
 <!-- TOC -->
-* [Mirror: Cached Struct Reflection for Go](#mirror-cached-struct-reflection-for-go)
+* [Mirror](#mirror)
   * [Features](#features)
+  * [Prerequisites](#prerequisites)
   * [Installation](#installation)
   * [Usage](#usage)
-  * [Accessing Cached Struct](#accessing-cached-struct-)
+  * [Accessing Cached Struct](#accessing-cached-struct)
   * [Accessing Cached Field](#accessing-cached-field)
   * [Accessing Cached Field Tags](#accessing-cached-field-tags)
   * [Setting Struct Fields](#setting-struct-fields)
   * [Getting Struct Field Value](#getting-struct-field-value)
-  * [Accessing a Function or Method Value](#accessing-a-function-or-method-value)
+  * [Functions and Methods](#functions-and-methods)
 <!-- TOC -->
-
-# Mirror: Cached Struct Reflection for Go
-
-`mirror` is a lightweight library that provides a simplified interface for 
-reflecting structs. The metadata about the struct and its fields is cached to 
-improve performance. 
 
 ## Features
 
-- **Cached Reflection**: Parses struct metadata once and caches it for later fast access.
-- **Simple Interface**: Provides an intuitive API to access struct and field metadata.
-- **Field Manipulation**: Supports setting struct field values using cached metadata.
-- **Tag Inspection**: Access and parse struct field tags.
-- **Lightweight**: Minimal overhead with a focus on performance and simplicity.
+- **Cached reflection**: Parse struct metadata once and reuse it.
+- **Field values**: Read and set struct fields through the cached metadata.
+- **Tag inspection**: Read and parse struct field tags.
+
+## Prerequisites
+
+Go 1.26 or later.
 
 ## Installation
-
-To use `mirror` in your Go project, install it using:
 
 ```bash
 go get github.com/ctx42/mirror
 ```
 
+Import the package:
+
+```go
+import "github.com/ctx42/mirror/pkg/mirror"
+```
+
 ## Usage
 
-The `mirror` library provides two primary functions to access struct metadata:
+`Reflect`, `ReflectType`, and `ReflectValue` read metadata and cache it.
 
 ```go
 func Reflect(v any) *Metadata
 func ReflectType(typ reflect.Type) *Metadata
+func ReflectValue(val reflect.Value) *Metadata
 ```
 
-These functions parse and cache struct metadata for faster later access.
-Below are examples demonstrating common use cases.
+## Accessing Cached Struct
 
-## Accessing Cached Struct 
+`Reflect` accepts any non-nil value. It follows every pointer and caches the
+metadata for that type. A later call with the same type returns the cached
+metadata. An untyped nil panics.
 
-The `Reflect` function accepts a struct pointer and caches its metadata.
-Subsequent calls with the same struct type retrieve the cached metadata,
-improving performance.
-
-<!-- gmdoceg:ExampleReflect -->
+<!-- gmmce:pkg/mirror/ExampleReflect -->
 ```go
 s := &struct {
-    F1 int
-    F2 bool
-    F3 string
-    f4 time.Time
+	F1 int
+	F2 bool
+	F3 string
+	f4 time.Time
 }{}
 
 smd := mirror.Reflect(s)
@@ -82,10 +89,10 @@ fmt.Printf("field by name: %s\n", smd.FieldByName("f4").Name())
 
 ## Accessing Cached Field
 
-Field metadata is cached alongside the struct metadata, providing a simple
-interface to inspect field properties.
+Field metadata is cached with the struct, and each field reports its type,
+name, and kind.
 
-<!-- gmdoceg:ExampleReflect_field -->
+<!-- gmmce:pkg/mirror/ExampleReflect_field -->
 ```go
 s := &struct{ f4 time.Time }{}
 
@@ -121,12 +128,12 @@ fmt.Printf("f4 anonymous: %v\n", field.IsAnonymous())
 
 ## Accessing Cached Field Tags
 
-You can access and inspect struct field tags using the cached metadata.
+`Tag` reads one struct tag by its key.
 
-<!-- gmdoceg:ExampleReflect_tag -->
+<!-- gmmce:pkg/mirror/ExampleReflect_tag -->
 ```go
 s := &struct {
-    F1 int `my:"t1,t2, t3"`
+	F1 int `my:"t1,t2, t3"`
 }{}
 
 smd := mirror.Reflect(s)
@@ -145,10 +152,10 @@ fmt.Printf("F1 tag `my` ignored: %v\n", tag.IsIgnored())
 
 ## Setting Struct Fields
 
-The `mirror` library allows you to set struct field values fast by using cached
-metadata, with support for initializing nil pointer fields.
+`NewStructValue` wraps a struct pointer. `NewIfNil` initializes a nil pointer
+field before the value is set.
 
-<!-- gmdoceg:ExampleStructValue_set -->
+<!-- gmmce:pkg/mirror/ExampleStructValue_set -->
 ```go
 s := &struct {
 	F1 *int
@@ -167,12 +174,14 @@ fmt.Printf("F1 value: %d\n", *s.F1)
 
 ## Getting Struct Field Value
 
-<!-- gmdoceg:ExampleFieldValue_Get -->
+`Get` returns the field's current value.
+
+<!-- gmmce:pkg/mirror/ExampleFieldValue_Get -->
 ```go
 s := &struct {
-    F1 int
+	F1 int
 }{
-    F1: 42,
+	F1: 42,
 }
 
 smd := mirror.NewStructValue(s)
@@ -184,14 +193,14 @@ fmt.Printf("F1 value: %v\n", value)
 // F1 value: 42
 ```
 
-## Accessing a Function or Method Value
+## Functions and Methods
 
-`ReflectValue` resolves package path and name for any function or method value,
-including anonymous closures.
+`ReflectValue` keeps the runtime name of a function or method, including an
+anonymous closure.
 
-<!-- gmdoceg:ExampleReflectValue -->
+<!-- gmmce:pkg/mirror/ExampleReflectValue -->
 ```go
-val := reflect.ValueOf(check.After)
+val := reflect.ValueOf(strings.TrimSpace)
 md := mirror.ReflectValue(val)
 
 fmt.Printf("type   : %s\n", md.Type().String())
@@ -199,8 +208,8 @@ fmt.Printf("kind   : %s\n", md.Kind().String())
 fmt.Printf("name   : %s\n", md.Name())
 fmt.Printf("package: %s\n", md.Package())
 // Output:
-// type   : func(interface {}, interface {}, ...interface {}) error
+// type   : func(string) string
 // kind   : func
-// name   : After
-// package: github.com/ctx42/testing/pkg/check
+// name   : TrimSpace
+// package: strings
 ```
