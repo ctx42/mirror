@@ -83,6 +83,24 @@ func Test_Field_Index(t *testing.T) {
 		// --- Then ---
 		assert.Equal(t, []int{1}, have)
 	})
+
+	t.Run("mutation does not change the field", func(t *testing.T) {
+		// --- Given ---
+		s := &struct {
+			F0 string
+			F1 int
+		}{}
+		sf := reflectkit.GetField(t, s, "F1")
+		fld := NewField(sf)
+		idx := fld.Index()
+		idx[0] = 99
+
+		// --- When ---
+		have := fld.Index()
+
+		// --- Then ---
+		assert.Equal(t, []int{1}, have)
+	})
 }
 
 func Test_Field_Name(t *testing.T) {

@@ -5,6 +5,7 @@ package mirror
 
 import (
 	"reflect"
+	"slices"
 )
 
 // Field represents struct field.
@@ -51,8 +52,8 @@ func (fld *Field) Type() reflect.Type { return fld.typ }
 // Kind returns [reflect.StructField.Type.Kind] for the field.
 func (fld *Field) Kind() reflect.Kind { return fld.kind }
 
-// Index returns the index sequence for the field type in a struct.
-func (fld *Field) Index() []int { return fld.index }
+// Index returns a copy of the index sequence for the field.
+func (fld *Field) Index() []int { return slices.Clone(fld.index) }
 
 // Name returns the name of the struct field.
 func (fld *Field) Name() string { return fld.sf.Name }

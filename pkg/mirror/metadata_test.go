@@ -373,6 +373,20 @@ func Test_Metadata_Fields(t *testing.T) {
 		// --- Then ---
 		assert.Nil(t, fields)
 	})
+
+	t.Run("mutation does not change the metadata", func(t *testing.T) {
+		// --- Given ---
+		md := NewMetadata(struct{ F int }{})
+		fields := md.Fields()
+		fields[0] = nil
+
+		// --- When ---
+		have := md.Fields()
+
+		// --- Then ---
+		assert.NotNil(t, have[0])
+		assert.Equal(t, "F", have[0].Name())
+	})
 }
 
 func Test_Metadata_FieldByName(t *testing.T) {

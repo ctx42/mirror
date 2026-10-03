@@ -6,6 +6,7 @@ package mirror
 import (
 	"reflect"
 	"runtime"
+	"slices"
 )
 
 // Metadata represents struct metadata.
@@ -74,8 +75,8 @@ func (md *Metadata) IsStruct() bool {
 	return md.kind == reflect.Struct
 }
 
-// Fields returns structure fields. The slice must be considered as read-only.
-func (md *Metadata) Fields() []*Field { return md.fields }
+// Fields returns a copy of the structure fields.
+func (md *Metadata) Fields() []*Field { return slices.Clone(md.fields) }
 
 // FieldByName returns a struct field by name or nil if the field doesn't exist.
 func (md *Metadata) FieldByName(name string) *Field {
