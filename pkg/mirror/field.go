@@ -50,16 +50,13 @@ func (fld *Field) StructField() reflect.StructField {
 	return sf
 }
 
-// Type returns [reflect.StructField.Type] for the field.
 func (fld *Field) Type() reflect.Type { return fld.typ }
 
-// Kind returns [reflect.StructField.Type.Kind] for the field.
 func (fld *Field) Kind() reflect.Kind { return fld.kind }
 
 // Index returns a copy of the index sequence for the field.
 func (fld *Field) Index() []int { return slices.Clone(fld.index) }
 
-// Name returns the name of the struct field.
 func (fld *Field) Name() string { return fld.sf.Name }
 
 // Tag returns tag by name, if the tag doesn't exist, it returns a tag for
@@ -94,20 +91,14 @@ func (fld *Field) IndirectType() reflect.Type {
 	return fld.typ
 }
 
-// IsSlice returns true if the field type is a slice, false otherwise.
 func (fld *Field) IsSlice() bool { return fld.kind == reflect.Slice }
 
-// IsArray returns true if the field type is an array, false otherwise.
 func (fld *Field) IsArray() bool { return fld.kind == reflect.Array }
 
-// IsSliceOrArray returns true if the field is a slice or an array, false
-// otherwise.
 func (fld *Field) IsSliceOrArray() bool { return fld.sliceOrArr }
 
-// IsMap returns true if the field type is a map, false otherwise.
 func (fld *Field) IsMap() bool { return fld.kind == reflect.Map }
 
-// IsInterface returns true if the field is an interface, false otherwise.
 func (fld *Field) IsInterface() bool { return fld.kind == reflect.Interface }
 
 // TypeMetadata returns [Metadata] for the field type.
