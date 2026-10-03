@@ -117,4 +117,50 @@ func Test_ReflectValue(t *testing.T) {
 		assert.Equal(t, "github.com/ctx42/mirror/pkg/mirror", have.pkg)
 		assert.Equal(t, "TwoStr", have.name)
 	})
+
+	t.Run("same signature keeps its own name", func(t *testing.T) {
+		// --- Given ---
+		first := reflect.ValueOf(fxA)
+		second := reflect.ValueOf(fxB)
+		ReflectValue(first)
+
+		// --- When ---
+		have := ReflectValue(second)
+
+		// --- Then ---
+		assert.Equal(t, "fxB", have.Name())
+		assert.Equal(t, "github.com/ctx42/mirror/pkg/mirror", have.Package())
+	})
+
+	t.Run("type reflect keeps the value name", func(t *testing.T) {
+		// --- Given ---
+		Reflect(fy)
+		val := reflect.ValueOf(fy)
+
+		// --- When ---
+		have := ReflectValue(val)
+
+		// --- Then ---
+		assert.Equal(t, "fy", have.Name())
+	})
+
+	t.Run("pointer to func", func(t *testing.T) {
+		// --- Given ---
+		fn := fy
+		p := &fn
+		val := reflect.ValueOf(p)
+
+		// --- When ---
+		have := ReflectValue(val)
+
+		// --- Then ---
+		assert.Equal(t, "fy", have.Name())
+		assert.Equal(t, reflect.Func, have.Kind())
+	})
 }
+
+func fxA(int) int { return 1 }
+
+func fxB(int) int { return 2 }
+
+func fy(string) string { return "" }

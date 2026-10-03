@@ -28,6 +28,9 @@ var (
 var (
 	typCache   = map[reflect.Type]*Metadata{} // Type metadata cache.
 	typCacheMX sync.RWMutex                   // Guards typCache.
+
+	fnCache   = map[uintptr]*Metadata{} // Function value metadata cache.
+	fnCacheMX sync.RWMutex              // Guards fnCache.
 )
 
 // Reflect extracts [Metadata] about type of "v". Panics if v is an untyped
@@ -55,7 +58,12 @@ func ReflectType(typ reflect.Type) *Metadata {
 }
 
 // ReflectValue extracts [Metadata] about the value.
+// A function value keeps the runtime name of that function.
 func ReflectValue(val reflect.Value) *Metadata {
+	if fn, ok := funcValue(val); ok {
+		return cachedFunc(fn)
+	}
+
 	typ := indirect(val.Type())
 
 	typCacheMX.RLock()
@@ -69,5 +77,43 @@ func ReflectValue(val reflect.Value) *Metadata {
 	typCacheMX.Lock()
 	typCache[typ] = md
 	typCacheMX.Unlock()
+	return md
+}
+
+// funcValue returns val when it is a function, following pointers.
+// The boolean is false for a nil pointer or any other kind.
+func funcValue(val reflect.Value) (reflect.Value, bool) {
+	for val.IsValid() && val.Kind() == reflect.Ptr {
+		if val.IsNil() {
+			return reflect.Value{}, false
+		}
+		val = val.Elem()
+	}
+	if !val.IsValid() || val.Kind() != reflect.Func || val.Pointer() == 0 {
+		return reflect.Value{}, false
+	}
+	return val, true
+}
+
+// cachedFunc returns metadata for one function value.
+// Repeated calls with the same code pointer return the same metadata.
+func cachedFunc(fn reflect.Value) *Metadata {
+	pc := fn.Pointer()
+
+	fnCacheMX.RLock()
+	md, found := fnCache[pc]
+	fnCacheMX.RUnlock()
+	if found {
+		return md
+	}
+
+	md = NewValueMetadata(fn)
+	fnCacheMX.Lock()
+	if existing, ok := fnCache[pc]; ok {
+		fnCacheMX.Unlock()
+		return existing
+	}
+	fnCache[pc] = md
+	fnCacheMX.Unlock()
 	return md
 }
