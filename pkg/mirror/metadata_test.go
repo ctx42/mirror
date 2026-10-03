@@ -111,7 +111,30 @@ func Test_NewMetadata(t *testing.T) {
 }
 
 func Test_NewTypeMetadata(t *testing.T) {
-	// Tested by Test_NewMetadata.
+	t.Run("struct", func(t *testing.T) {
+		// --- Given ---
+		typ := reflect.TypeOf(struct{ F int }{})
+
+		// --- When ---
+		have := NewTypeMetadata(typ)
+
+		// --- Then ---
+		assert.Equal(t, typ, have.typ)
+		assert.Equal(t, reflect.Struct, have.kind)
+		assert.Len(t, 1, have.fields)
+	})
+
+	t.Run("pointer", func(t *testing.T) {
+		// --- Given ---
+		typ := reflect.TypeOf(&struct{ F int }{})
+
+		// --- When ---
+		have := NewTypeMetadata(typ)
+
+		// --- Then ---
+		assert.Equal(t, typ.Elem(), have.typ)
+		assert.Equal(t, reflect.Struct, have.kind)
+	})
 }
 
 func Test_NewValueMetadata(t *testing.T) {
