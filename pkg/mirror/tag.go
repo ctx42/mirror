@@ -42,7 +42,7 @@ func (tag Tag) NameOrField() string {
 // IsIgnored returns true if the tag name is set to the "-" value.
 func (tag Tag) IsIgnored() bool { return tag.name == "-" }
 
-// IsZero returns true if the Tag is empty (all fields are empty strings).
+// IsZero returns true when the key, the name, and the options are empty.
 func (tag Tag) IsZero() bool {
 	return tag.key == "" && tag.name == "" && len(tag.options) == 0
 }
