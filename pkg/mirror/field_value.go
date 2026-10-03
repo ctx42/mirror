@@ -30,10 +30,8 @@ func (fv *FieldValue) StructValue() *StructValue {
 	}
 }
 
-// Field returns the [Field] associated with the [FieldValue].
 func (fv *FieldValue) Field() *Field { return fv.field }
 
-// Value returns the [reflect.Value] associated with the [FieldValue].
 func (fv *FieldValue) Value() reflect.Value { return fv.value }
 
 // NewIfNil allocates a nil pointer, map, or slice.
