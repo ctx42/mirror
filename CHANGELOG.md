@@ -1,3 +1,6 @@
+## v0.6.1 (Sat, 10 Oct 2026 19:22:21 UTC)
+- build(deps): update 2 ctx42 dependencies.
+
 ## v0.6.0 (Sat, 03 Oct 2026 11:49:31 UTC)
 - fix: follow every pointer when building type metadata.
 - fix: cache function names per function, not per type.
