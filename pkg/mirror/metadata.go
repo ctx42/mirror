@@ -26,8 +26,26 @@ func NewMetadata(v any) *Metadata {
 
 // NewTypeMetadata extracts [Metadata] for the type. Panics when the type
 // represents nil value.
+//
+// Within one call every occurrence of a struct type shares one [Metadata], so
+// a recursive type yields a cyclic graph: [Field.TypeMetadata] of the Next
+// field in "type Node struct{ Next *Node }" returns the metadata of Node.
 func NewTypeMetadata(typ reflect.Type) *Metadata {
+	return newTypeMetadata(typ, nil)
+}
+
+// newTypeMetadata extracts [Metadata] for the type. The seen map holds the
+// struct metadata built so far in the call, keyed by type; a nil map is
+// allocated when the first struct is found.
+func newTypeMetadata(
+	typ reflect.Type,
+	seen map[reflect.Type]*Metadata,
+) *Metadata {
+
 	typ = indirect(typ)
+	if md, ok := seen[typ]; ok {
+		return md
+	}
 	md := &Metadata{
 		typ:  typ,
 		kind: typ.Kind(),
@@ -35,7 +53,11 @@ func NewTypeMetadata(typ reflect.Type) *Metadata {
 		name: typ.Name(),
 	}
 	if md.kind == reflect.Struct {
-		md.getFields()
+		if seen == nil {
+			seen = make(map[reflect.Type]*Metadata)
+		}
+		seen[typ] = md // Before the fields, so a cycle finds it.
+		md.getFields(seen)
 	}
 	return md
 }
@@ -105,8 +127,9 @@ func (md *Metadata) FieldByIndex(idx int) *Field {
 	return md.fields[idx]
 }
 
-// getFields gets all struct fields.
-func (md *Metadata) getFields() {
+// getFields gets all struct fields. The seen map is passed to
+// newTypeMetadata for each field type.
+func (md *Metadata) getFields(seen map[reflect.Type]*Metadata) {
 	nf := md.typ.NumField()
 	if nf == 0 {
 		return
@@ -114,7 +137,7 @@ func (md *Metadata) getFields() {
 	md.fields = make([]*Field, nf)
 	md.fieldIdx = make(map[string]int, nf)
 	for i := 0; i < nf; i++ {
-		md.fields[i] = NewField(md.typ.Field(i))
+		md.fields[i] = newField(md.typ.Field(i), seen)
 		md.fieldIdx[md.fields[i].Name()] = i
 	}
 }

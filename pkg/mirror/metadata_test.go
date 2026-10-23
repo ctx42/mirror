@@ -135,6 +135,35 @@ func Test_NewTypeMetadata(t *testing.T) {
 		assert.Equal(t, typ.Elem(), have.typ)
 		assert.Equal(t, reflect.Struct, have.kind)
 	})
+
+	t.Run("self-referential struct", func(t *testing.T) {
+		// --- When ---
+		have := NewTypeMetadata(reflect.TypeOf(TNode{}))
+
+		// --- Then ---
+		assert.Len(t, 2, have.fields)
+		assert.Same(t, have, have.FieldByName("Next").TypeMetadata())
+	})
+
+	t.Run("mutually recursive structs", func(t *testing.T) {
+		// --- When ---
+		have := NewTypeMetadata(reflect.TypeOf(TTreeA{}))
+
+		// --- Then ---
+		mdb := have.FieldByName("B").TypeMetadata()
+		assert.Equal(t, reflect.TypeOf(TTreeB{}), mdb.typ)
+		assert.Same(t, have, mdb.FieldByName("A").TypeMetadata())
+	})
+
+	t.Run("same type in many fields", func(t *testing.T) {
+		// --- When ---
+		have := NewTypeMetadata(reflect.TypeOf(TStruct{}))
+
+		// --- Then ---
+		mdp := have.FieldByName("SPtr").TypeMetadata()
+		assert.Same(t, mdp, have.FieldByName("SVal").TypeMetadata())
+		assert.Same(t, mdp, have.FieldByName("SNil").TypeMetadata())
+	})
 }
 
 func Test_NewValueMetadata(t *testing.T) {

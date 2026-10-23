@@ -21,3 +21,15 @@ type TStruct struct {
 	SVal  TwoStr
 	SNil  *TwoStr
 }
+
+// TNode is a self-referential struct used for tests.
+type TNode struct {
+	Val  int
+	Next *TNode
+}
+
+// TTreeA and TTreeB are mutually recursive structs used for tests.
+type TTreeA struct{ B *TTreeB }
+
+// TTreeB is the second half of [TTreeA].
+type TTreeB struct{ A *TTreeA }

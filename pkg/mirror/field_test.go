@@ -26,6 +26,19 @@ func Test_NewField(t *testing.T) {
 		assert.Equal(t, sf, have.sf)
 		assert.Nil(t, have.tags)
 	})
+
+	t.Run("self-referential struct", func(t *testing.T) {
+		// --- Given ---
+		sf := reflectkit.GetField(t, &TNode{}, "Next")
+
+		// --- When ---
+		have := NewField(sf)
+
+		// --- Then ---
+		md := have.TypeMetadata()
+		assert.Equal(t, reflect.TypeOf(TNode{}), md.typ)
+		assert.Same(t, md, md.FieldByName("Next").TypeMetadata())
+	})
 }
 
 func Test_Field_StructField(t *testing.T) {

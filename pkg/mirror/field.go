@@ -23,12 +23,17 @@ type Field struct {
 	tagErr error // Error from parsing the struct tag.
 }
 
-// NewField returns a new instance of the struct field.
-func NewField(sf reflect.StructField) *Field {
+// NewField returns a new instance of the struct field. The field type
+// metadata is built as by [NewTypeMetadata].
+func NewField(sf reflect.StructField) *Field { return newField(sf, nil) }
+
+// newField returns a new instance of the struct field. The seen map is
+// passed to newTypeMetadata for the field type.
+func newField(sf reflect.StructField, seen map[reflect.Type]*Metadata) *Field {
 	kind := sf.Type.Kind()
 	sf.Index = slices.Clone(sf.Index)
 	fld := &Field{
-		metadata:   NewTypeMetadata(sf.Type),
+		metadata:   newTypeMetadata(sf.Type, seen),
 		sf:         sf,
 		typ:        sf.Type,
 		kind:       kind,
