@@ -1,3 +1,6 @@
+## v0.6.3 (Fri, 23 Oct 2026 08:16:16 UTC)
+- fix: build metadata for recursive struct types.
+
 ## v0.6.2 (Sat, 17 Oct 2026 22:03:56 UTC)
 - ci: set C42_CC_RUN_ID in the workflow environment.
 - chore(deps): update dependencies.
