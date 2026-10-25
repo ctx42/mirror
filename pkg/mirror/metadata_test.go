@@ -487,6 +487,52 @@ func Test_Metadata_Fields(t *testing.T) {
 	})
 }
 
+func Test_Metadata_NumField(t *testing.T) {
+	t.Run("struct with fields", func(t *testing.T) {
+		// --- Given ---
+		md := NewMetadata(TStruct{})
+
+		// --- When ---
+		have := md.NumField()
+
+		// --- Then ---
+		assert.Equal(t, 9, have)
+	})
+
+	t.Run("struct without fields", func(t *testing.T) {
+		// --- Given ---
+		md := NewMetadata(struct{}{})
+
+		// --- When ---
+		have := md.NumField()
+
+		// --- Then ---
+		assert.Equal(t, 0, have)
+	})
+
+	t.Run("not a struct", func(t *testing.T) {
+		// --- Given ---
+		md := NewMetadata(42)
+
+		// --- When ---
+		have := md.NumField()
+
+		// --- Then ---
+		assert.Equal(t, 0, have)
+	})
+
+	t.Run("does not allocate", func(t *testing.T) {
+		// --- Given ---
+		md := NewMetadata(TStruct{})
+
+		// --- When ---
+		have := testing.AllocsPerRun(10, func() { _ = md.NumField() })
+
+		// --- Then ---
+		assert.Equal(t, 0.0, have)
+	})
+}
+
 func Test_Metadata_FieldByName(t *testing.T) {
 	t.Run("known exported field", func(t *testing.T) {
 		// --- Given ---

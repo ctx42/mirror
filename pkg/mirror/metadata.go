@@ -110,6 +110,11 @@ func (md *Metadata) IsStruct() bool {
 // Fields returns a copy of the structure fields.
 func (md *Metadata) Fields() []*Field { return slices.Clone(md.fields) }
 
+// NumField returns the number of struct fields, zero for a type that is not a
+// struct. Unlike [Metadata.Fields] it copies nothing, so a loop over
+// [Metadata.FieldByIndex] reads the fields without allocating.
+func (md *Metadata) NumField() int { return len(md.fields) }
+
 // FieldByName returns a struct field by name or nil if the field doesn't exist.
 func (md *Metadata) FieldByName(name string) *Field {
 	if i, ok := md.fieldIdx[name]; ok {
