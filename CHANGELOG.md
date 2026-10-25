@@ -1,3 +1,7 @@
+## v0.7.0 (Sun, 25 Oct 2026 10:35:57 UTC)
+- feat(mirror): add Metadata.NumField.
+- feat(mirror): add Names for struct tag field lookup.
+
 ## v0.6.3 (Fri, 23 Oct 2026 08:16:16 UTC)
 - fix: build metadata for recursive struct types.
 
