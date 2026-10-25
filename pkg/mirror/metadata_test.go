@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"reflect"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/ctx42/testing/pkg/assert"
@@ -530,6 +531,77 @@ func Test_Metadata_NumField(t *testing.T) {
 
 		// --- Then ---
 		assert.Equal(t, 0.0, have)
+	})
+}
+
+func Test_Metadata_Names(t *testing.T) {
+	t.Run("builds the names of the key", func(t *testing.T) {
+		// --- Given ---
+		md := NewMetadata(TStruct{})
+
+		// --- When ---
+		have := md.Names("json")
+
+		// --- Then ---
+		idx, ok := have.Field("f_json")
+		assert.True(t, ok)
+		assert.Equal(t, []int{0}, idx)
+		assert.True(t, have.IsIgnored("FpStr"))
+	})
+
+	t.Run("returns the same names for a key", func(t *testing.T) {
+		// --- Given ---
+		md := NewMetadata(TStruct{})
+		want := md.Names("json")
+
+		// --- When ---
+		have := md.Names("json")
+
+		// --- Then ---
+		assert.Same(t, want, have)
+	})
+
+	t.Run("keys have their own names", func(t *testing.T) {
+		// --- Given ---
+		md := NewMetadata(TStruct{})
+		other := md.Names("json")
+
+		// --- When ---
+		have := md.Names("url")
+
+		// --- Then ---
+		assert.NotSame(t, other, have)
+		_, ok := have.Field("FStr")
+		assert.True(t, ok)
+	})
+
+	t.Run("not a struct", func(t *testing.T) {
+		// --- Given ---
+		md := NewMetadata(42)
+
+		// --- When ---
+		have := md.Names("json")
+
+		// --- Then ---
+		assert.Equal(t, 0, have.Len())
+	})
+
+	t.Run("concurrent calls", func(t *testing.T) {
+		// --- Given ---
+		md := NewMetadata(TStruct{})
+		var wg sync.WaitGroup
+		res := make([]*Names, 8)
+
+		// --- When ---
+		for i := range res {
+			wg.Go(func() { res[i] = md.Names("json") })
+		}
+		wg.Wait()
+
+		// --- Then ---
+		for _, nms := range res {
+			assert.Same(t, res[0], nms)
+		}
 	})
 }
 

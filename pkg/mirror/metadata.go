@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"runtime"
 	"slices"
+	"sync"
 )
 
 // Metadata represents struct metadata.
@@ -17,6 +18,9 @@ type Metadata struct {
 	fieldIdx map[string]int // Field name to fields slice index.
 	pkg      string         // Type import string may be empty.
 	name     string         // Type name when, may be empty.
+
+	namesMX sync.Mutex        // Guards names.
+	names   map[string]*Names // Names per tag key, built on first use.
 }
 
 // NewMetadata extracts [Metadata] about type of "v". Panics for nil value.
@@ -114,6 +118,23 @@ func (md *Metadata) Fields() []*Field { return slices.Clone(md.fields) }
 // struct. Unlike [Metadata.Fields] it copies nothing, so a loop over
 // [Metadata.FieldByIndex] reads the fields without allocating.
 func (md *Metadata) NumField() int { return len(md.fields) }
+
+// Names returns the [Names] the key struct tag gives the fields of the struct,
+// built on the first call for the key and shared by later ones; it is safe for
+// concurrent use. A type that is not a struct names no field.
+func (md *Metadata) Names(key string) *Names {
+	md.namesMX.Lock()
+	defer md.namesMX.Unlock()
+	if nms, ok := md.names[key]; ok {
+		return nms
+	}
+	if md.names == nil {
+		md.names = make(map[string]*Names)
+	}
+	nms := newNames(md, key)
+	md.names[key] = nms
+	return nms
+}
 
 // FieldByName returns a struct field by name or nil if the field doesn't exist.
 func (md *Metadata) FieldByName(name string) *Field {
