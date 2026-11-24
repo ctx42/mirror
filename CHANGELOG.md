@@ -1,3 +1,6 @@
+## v0.7.1 (Tue, 24 Nov 2026 14:35:33 UTC)
+- chore(deps): update dependencies.
+
 ## v0.7.0 (Sun, 25 Oct 2026 10:35:57 UTC)
 - feat(mirror): add Metadata.NumField.
 - feat(mirror): add Names for struct tag field lookup.
